@@ -20,4 +20,9 @@ func init() {
 	if Engine.Error != nil {
 		fmt.Printf("database error %v", Engine.Error)
 	}
+
+	Engine.SingularTable(true)
+	gorm.DefaultTableNameHandler = func(Engine *gorm.DB, defaultTableName string) string {
+		return "biu_" + defaultTableName
+	}
 }

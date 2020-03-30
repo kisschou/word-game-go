@@ -3,17 +3,10 @@ package controllers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"net/http"
 	"wordgame/app/models"
+	. "wordgame/library/encrypt"
 )
-
-type MemberInfo struct {
-	gorm.Model
-	Name     string `json:"name" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Mobile   string `json:"mobile" binding:"required"`
-}
 
 func Ping(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
@@ -22,14 +15,29 @@ func Ping(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	var json models.User     // 定义json 变量 数据结构类型 为 (models/member).MemberInfo
-	err := c.BindJSON(&json) // 获取前台传过来的json数据
+	var member models.User     // 定义json 变量 数据结构类型 为 (models/member).MemberInfo
+	err := c.BindJSON(&member) // 获取前台传过来的json数据
 
 	if err != nil {
 		fmt.Printf("mysql connect error %v", err)
 	}
 
-	memberList, err := json.FindAll()
+	memberList, err := member.FindAll()
+
+	if err != nil {
+		fmt.Printf("database error %v", err)
+		fmt.Printf("database error %v", memberList)
+		return
+	}
+
+	var address models.UserAddress
+	err = c.BindJSON(&address)
+
+	if err != nil {
+		fmt.Printf("mysql connect error %v", err)
+	}
+
+	memberAddress, err := address.FindAll()
 
 	if err != nil {
 		fmt.Printf("database error %v", err)
@@ -38,9 +46,11 @@ func Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":     true,
-		"memberList": memberList,
-		"message":    "success",
+		"status":        true,
+		"md5":           Md5("123456"),
+		"memberList":    memberList,
+		"memberAddress": memberAddress,
+		"message":       "success",
 	})
 }
 
