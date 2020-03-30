@@ -14,9 +14,9 @@ type User struct {
 }
 
 func (info *User) Insert() (userId uint, err error) {
-	result := Engine.Create(&info)
-	if result.Error != nil {
-		err = result.Error
+	result, err := Engine.Insert(&info)
+	if result != 0 {
+		return
 	}
 	return
 }
@@ -24,8 +24,8 @@ func (info *User) Insert() (userId uint, err error) {
 func (info *User) FindAll() (memberList []User, err error) {
 	result := Engine.Find(&memberList)
 
-	if result.Error != nil {
-		err = result.Error
+	if result != nil {
+		err = result
 		return
 	}
 

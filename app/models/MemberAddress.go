@@ -21,8 +21,8 @@ type UserAddress struct {
 func (info *UserAddress) FindAll() (addressList []UserAddress, err error) {
 	result := Engine.Find(&addressList)
 
-	if result.Error != nil {
-		err = result.Error
+	if result != nil {
+		err = result
 		return
 	}
 
