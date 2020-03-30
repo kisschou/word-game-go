@@ -1,0 +1,884 @@
+syntax = "proto3";
+import "base.proto";
+
+package BiuRpc.Api;
+
+//@module Api 通用接口
+
+//========================================
+//@group System 系统
+//系统(System) begin
+//========================================
+
+//@desc 检查更新
+//@class System
+//@method CheckVersion
+//请求服务端
+message RequestSystemCheckVersion{
+    BiuRpc.Base.Request base = 1;
+    string version = 2; //外部版本号
+    int32 buildNum = 3; //内部版本号
+    int32 platform = 4; //平台
+    string channel = 5; //渠道号
+}
+
+// 返回客户端
+message ResponseSystemCheckVersion{
+    BiuRpc.Base.Response base = 1;
+    bool isUpdate = 2; //是否更新
+    int32 buildNum = 3; //内部版本号
+    string version = 4; //外部版本号
+    bool isForce = 5; //是否强制更新
+    bool isReview = 6; //是否正在审核
+    string desc = 7; //更新说明
+    string url = 8; //更新地址（apk安装包下载地址或appstore下载地址）
+    string apiUrl = 9; //接口地址
+    string uploadUrl = 10; //图片资源上传地址
+}
+
+//@desc 获取服务器基础信息
+//@class System
+//@method GetBaseInfo
+//请求服务端
+message RequestSystemGetBaseInfo{
+    BiuRpc.Base.Request base = 1;
+}
+//返回客户端
+message ResponseSystemGetBaseInfo{
+    BiuRpc.Base.Response base = 1;
+    int32 serverTimeStamp = 2; //服务器时间戳
+    string pictureUrlHostName = 3; //服务器图片域名
+}
+
+//@desc 上传图片
+//@class System
+//@method UploadBase64Picture
+//请求服务端
+message RequestSystemUploadBase64Picture {
+    BiuRpc.Base.Request base = 1;
+    repeated BiuRpc.Base.UploadBase64FileRequest base64PictureList = 2; //Base64格式的图片列表
+}
+//返回客户端
+message ResponseSystemUploadBase64Picture {
+    BiuRpc.Base.Response base = 1;
+    repeated BiuRpc.Base.UploadPictureResult pictureList = 2; //图片上传信息
+}
+
+//@desc 上传文件
+//@class System
+//@method UploadBase64File
+//请求服务端
+message RequestSystemUploadBase64File {
+    BiuRpc.Base.Request base = 1;
+    repeated BiuRpc.Base.UploadBase64FileRequest base64FileList = 2; //Base64格式的文件列表
+}
+//返回客户端
+message ResponseSystemUploadBase64File {
+    BiuRpc.Base.Response base = 1;
+    repeated BiuRpc.Base.UploadPictureResult fileList = 2; //文件上传信息
+}
+
+//@desc 下载并上传远程图片到服务器
+//@class System
+//@method UploadRemotePicture
+//请求服务端
+message RequestSystemUploadRemotePicture {
+    BiuRpc.Base.Request base = 1;
+    string url = 2; //远程图片的URL
+}
+//返回客户端
+message ResponseSystemUploadRemotePicture{
+    BiuRpc.Base.Response base = 1;
+    repeated BiuRpc.Base.UploadPictureResult pictureList = 2; //图片上传信息
+}
+
+//@desc 获取以Base64格式编码的二维码图片
+//@class System
+//@method BuildQrCodePicture
+//请求服务端
+message RequestSystemBuildQrCodePicture{
+    BiuRpc.Base.Request base = 1;
+    string dataStr = 2; //要生成的数据
+}
+//返回客户端
+message ResponseSystemBuildQrCodePicture{
+    BiuRpc.Base.Response base = 1;
+    BiuRpc.Base.Picture qrCode = 2; //base64图片
+}
+
+//@desc 获取以Base64格式编码的图片验证码
+//@class System
+//@method BuildVerificationCodePicture
+//请求服务端
+message RequestSystemBuildVerificationCodePicture{
+    BiuRpc.Base.Request base = 1;
+}
+//返回客户端
+message ResponseSystemBuildVerificationCodePicture{
+    BiuRpc.Base.Response base = 1;
+    BiuRpc.Base.Picture verificationCode = 2; //base64图片
+}
+
+//@class System
+//@method UpdateDeviceInfo
+//@desc 更新设备的信息
+// 请求 - 更新设备的信息
+message RequestSystemUpdateDeviceInfo{
+    BiuRpc.Base.Request base = 1;
+    int32 platform = 2;//平台 1苹果 2安卓
+    string os = 3;//操作系统
+    string model = 4;//型号 如小米
+    int32 screenWidth = 5;//屏幕宽度
+    int32 screenHeight = 6;//屏幕高度
+    string udid = 7;//设备唯一标识
+    string idfa = 8;//iOS IDFA
+    string imei = 9;//imei
+    string imsi = 10;//imsi
+    int32 network = 11;//网络类型:1.WIFI;2.2G;3.3G;4.4G
+    string language = 12;//语言
+    string country = 13;//国家
+    int32 buildNum = 14;//数字版本号
+    string version = 15;//文字版本号
+    string packagename = 16;//包名
+    string channel = 17;//发布渠道
+    string pushToken = 18;//推送的Token
+}
+
+// 返回 - 更新设备的信息
+message ResponseSystemUpdateDeviceInfo{
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 获取微信JSSDK的配置信息
+//@class System
+//@method GetWechatJsSdkConfig
+//请求服务端
+message RequestSystemGetWechatJsSdkConfig{
+    BiuRpc.Base.Request base = 1;
+    string key = 2; //密钥
+    string url = 3; //调用的页面的url
+}
+//返回客户端
+message ResponseSystemGetWechatJsSdkConfig{
+    BiuRpc.Base.Response base = 1;
+    string jsApiTicket = 2; //票据
+    string appId = 3; //AppId
+    int32 timeStamp = 4; //时间戳
+    string nonceStr = 5; //随机字符串
+    string sign = 6; //签名值
+}
+
+//@desc 意见反馈
+//@class System
+//@method Feedback
+//请求服务端
+message RequestSystemFeedback{
+    BiuRpc.Base.Request base = 1;
+    string content = 2; // 内容
+    string nickname = 3; // 姓名
+    string mobile = 4; // 联系方式
+}
+//返回客户端
+message ResponseSystemFeedback{
+    BiuRpc.Base.Response base = 1;
+}
+
+//========================================
+//系统(System) end
+//========================================
+
+//========================================
+//@group DocTool 文档工具
+//文档工具(DocTool) begin
+//========================================
+
+//接口
+message Api {
+    int32 id = 1; //ID
+    string name = 2; //名称
+    string description = 3; //说明
+    bool isApi = 4; //是否API
+    string apiUrl = 5; //API路径
+    SignApiType apiType = 6; //API类型
+    SignApiMessageType messageType = 7; //结构体类型
+    SignApiFieldType fieldType = 8; //字段类型
+    int32 fieldTypeId = 9; //字段类型ID
+    bool isRequired = 10; //是否必填字段
+    bool isRepeated = 11; //是否数组
+    repeated Api apiList = 12; //子类型
+}
+
+//接口字段类型
+enum SignApiType {
+    API_TYPE_NONE = 0; //无类型
+    API_TYPE_REQUEST = 1; //请求
+    API_TYPE_RESPONSE = 2; //返回
+}
+
+//接口类型
+enum SignApiMessageType {
+    API_MESSAGE_TYPE_NONE = 0; //无类型
+    API_MESSAGE_TYPE_MODULE = 1; //package/module
+    API_MESSAGE_TYPE_CLASS = 2; //group/class
+    API_MESSAGE_TYPE_METHOD = 3; //message/method
+    API_MESSAGE_TYPE_SIGN = 4; //enum/sign
+    API_MESSAGE_TYPE_FIELD = 5; //field
+}
+
+//接口字段类型
+enum SignApiFieldType {
+    API_FIELD_TYPE_NONE = 0; //自定义
+    API_FIELD_TYPE_DOUBLE = 1; //double
+    API_FIELD_TYPE_FLOAT = 2; //float
+    API_FIELD_TYPE_INT64 = 3; //int64
+    API_FIELD_TYPE_UINT64 = 4; //uint64
+    API_FIELD_TYPE_INT32 = 5; //int32
+    API_FIELD_TYPE_FIXED64 = 6; //fixed64
+    API_FIELD_TYPE_FIXED32 = 7; //fixed32
+    API_FIELD_TYPE_BOOL = 8; //bool
+    API_FIELD_TYPE_STRING = 9; //string
+    API_FIELD_TYPE_GROUP = 10; //group
+    API_FIELD_TYPE_MESSAGE = 11; //message
+    API_FIELD_TYPE_BYTES = 12; //bytes
+    API_FIELD_TYPE_UINT32 = 13; //uint32
+    API_FIELD_TYPE_ENUM = 14; //enum
+    API_FIELD_TYPE_SFIXED32 = 15; //sfixed32
+    API_FIELD_TYPE_SFIXED64 = 16; //sfixed64
+    API_FIELD_TYPE_SINT32 = 17; //sint32
+    API_FIELD_TYPE_SINT64 = 18; //sint64
+}
+
+//@desc 获取接口树
+//@class DocTool
+//@method GetApiTree
+//请求服务端
+message RequestDocToolGetApiTree {
+    BiuRpc.Base.Request base = 1;
+}
+
+// 返回客户端
+message ResponseDocToolGetApiTree {
+    BiuRpc.Base.Response base = 1;
+    repeated Api apiList = 2; //接口树
+}
+
+//@desc 添加接口
+//@class DocTool
+//@method AddApi
+//请求服务端
+message RequestDocToolAddApi {
+    BiuRpc.Base.Request base = 1;
+    int32 pid = 2; //父ID
+    string name = 3; //名称
+    string description = 4; //说明
+    string apiUrl = 6; //接口路径
+    SignApiMessageType messageType = 7; //接口类型
+    bool isApi = 8; //是否作为接口 
+    int32 apiType = 9; //接口类型
+    bool isBase = 10; //是否公共接口
+    SignApiFieldType fieldType = 11; //字段类型
+    int32 fieldTypeId = 12; //字段类型ID
+    bool isRequired = 13; //是否必填
+    bool isRepeated = 14; //是否数组
+}
+
+// 返回客户端
+message ResponseDocToolAddApi {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 删除接口
+//@class DocTool
+//@method DeleteApi
+//请求服务端
+message RequestDocToolDeleteApi {
+    BiuRpc.Base.Request base = 1;
+    int32 id = 2; //ID
+}
+
+// 返回客户端
+message ResponseDocToolDeleteApi {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 修改接口
+//@class DocTool
+//@method UpdateApi
+//请求服务端
+message RequestDocToolUpdateApi {
+    BiuRpc.Base.Request base = 1;
+    int32 id = 2; //ID
+    int32 pid = 3; //父ID
+    bool isUpdatePid = 4; //是否更新父ID
+    string name = 5; //名称
+    bool isUpdateName = 6; //是否更新名称
+    string description = 7; //说明
+    bool isUpdateDescription = 8; //是否更新说明
+    string apiUrl = 9; //接口路径
+    bool isUpdateApiUrl = 10; //是否更新接口路径
+    SignApiMessageType messageType = 11; //接口类型
+    bool isUpdateMessageType = 12; //是否更新接口类型
+    bool isApi = 13; //是否作为接口 
+    bool isUpdateIsApi = 14; //是否更新是否作为接口 
+    bool apiType = 15; //接口类型
+    bool isUpdateApiType = 16; //接口类型
+    bool isBase = 17; //是否公共
+    bool isUpdateIsBase = 18; //是否更新是否公共
+    SignApiFieldType fieldType = 19; //字段类型
+    bool isUpdateFieldType = 20; //是否更新字段类型
+    int32 fieldTypeId = 21; //字段类型ID
+    bool isUpdateFieldTypeId = 22; //是否更新字段类型ID
+    bool isRequired = 23; //是否必填
+    bool isUpdateIsRequired = 24; //是否更新是否必填
+    bool isRepeated = 25; //是否数组
+    bool isUpdateIsRepeated = 26; //是否更新是否数组
+}
+
+// 返回客户端
+message ResponseDocToolUpdateApi {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 获取接口详情
+//@class DocTool
+//@method GetMessageInfo
+//请求服务端
+message RequestDocToolGetMessageInfo {
+    BiuRpc.Base.Request base = 1;
+    int32 id = 2; //Api ID/Message Id
+    bool isApi = 3; //是否Api
+    SignApiType apiType = 4; //Api类型
+}
+
+// 返回客户端
+message ResponseDocToolGetMessageInfo {
+    BiuRpc.Base.Response base = 1;
+    Api messageInfo = 2; //Message详情
+}
+
+//@desc 获取接口相关的Message
+//@class DocTool
+//@method GetMessageList
+//请求服务端
+message RequestDocToolGetMessageList {
+    BiuRpc.Base.Request base = 1;
+    int32 moduleId = 2; //所属模块ID
+}
+
+// 返回客户端
+message ResponseDocToolGetMessageList {
+    BiuRpc.Base.Response base = 1;
+    repeated Api apiList = 2; //Message列表
+}
+
+//@desc 获取接口菜单节点列表
+//@class DocTool
+//@method GetActionList
+//请求服务端
+message RequestDocToolGetActionList{
+    BiuRpc.Base.Request base = 1;
+}
+
+// 返回客户端
+message ResponseDocToolGetActionList{
+    BiuRpc.Base.Response base = 1;
+    repeated MenuActionNode actionNodeList = 2; //接口菜单节点列表
+}
+
+//@desc 获取接口详情
+//@class DocTool
+//@method GetFieldInfo
+//请求服务端
+message RequestDocToolGetFieldInfo {
+    BiuRpc.Base.Request base = 1;
+    int32 id = 2; //Field Id
+}
+
+// 返回客户端
+message ResponseDocToolGetFieldInfo {
+    BiuRpc.Base.Response base = 1;
+    Api fieldInfo = 2; //详情
+}
+
+//@desc 获取模块对应的Protobuf文件内容
+//@class DocTool
+//@method GetProtoFileContent
+//请求服务端
+message RequestDocToolGetProtoFileContent{
+    BiuRpc.Base.Request base = 1;
+    string moduleName = 2; //模块名
+}
+
+// 返回客户端
+message ResponseDocToolGetProtoFileContent{
+    BiuRpc.Base.Response base = 1;
+    string fileContent = 2; //文件内容
+    string docContent = 3; //文档内容
+}
+
+//@desc 检查PbRpc客户端的版本
+//@class DocTool
+//@method CheckVersion
+//请求服务端
+message RequestDocToolCheckVersion{
+    BiuRpc.Base.Request base = 1;
+    int32 buildNum = 2; //内部版本号
+    string type = 3; //检查的PbRpc语言类型:js,java,php
+}
+
+// 返回客户端
+message ResponseDocToolCheckVersion{
+    BiuRpc.Base.Response base = 1;
+    bool isUpdate = 2; //是否更新
+    int32 buildNum = 3; //内部版本号
+    repeated DocToolUpdateFile fileList = 4; //更新的文件列表
+}
+
+//菜单节点
+message MenuActionNode{
+    int32 actionCode = 1; //接口码
+    string name = 2; //模块名
+    string className = 3; //类名
+    string methodName = 4; //方法名
+    string desc = 5; //简介
+    SignMenuActionNodeType actionNodeType = 6; //节点类型
+    repeated MenuActionNode actionNodeList = 7; //子节点列表
+}
+
+//菜单节点类型
+enum SignMenuActionNodeType{
+    MENU_ACTION_NODE_TYPE_NONE = 0; //无类型
+    MENU_ACTION_NODE_TYPE_MODULE = 1; //模块
+    MENU_ACTION_NODE_TYPE_CLASS = 2; //类
+    MENU_ACTION_NODE_TYPE_METHOD = 3; //方法
+}
+
+//更新文件
+message DocToolUpdateFile {
+    string filePath = 1; //文件路径
+    string fileContent = 2; //文件内容
+}
+
+//@desc 获取公共文档
+//@class DocTool
+//@method GetDocument
+//请求服务端
+message RequestDocToolGetDocument {
+    BiuRpc.Base.Request base = 1;
+    string docName = 2; //文档名称
+}
+
+// 返回客户端
+message ResponseDocToolGetDocument {
+    BiuRpc.Base.Response base = 1;
+    repeated DocToolDocMenu docList = 2; //文档列表
+    string docContent = 3; //文档内容
+}
+
+//请求工具文档菜单
+message DocToolDocMenu {
+    int32 level = 1; //目录层级0为顶级菜单,1为菜单下文件
+    string name = 2; //标题
+    string docName = 3; //文件名
+    repeated DocToolDocMenu docList = 4; //子级
+}
+
+//@desc 获取错误列表
+//@class DocTool
+//@method GetErrorCode
+//请求服务端
+message RequestDocToolGetErrorCode {
+    BiuRpc.Base.Request base = 1;
+}
+
+// 返回客户端
+message ResponseDocToolGetErrorCode {
+    BiuRpc.Base.Response base = 1;
+    repeated DocToolErrorCode errorCodeList = 2; //错误列表
+}
+
+//请求工具错误信息
+message DocToolErrorCode {
+    int32 code = 1; //错误码
+    string msg = 2; //错误信息
+}
+
+
+//========================================
+//文档工具(DocTool) end
+//========================================
+
+//========================================
+//@group User 用户中心
+//系统(User) begin
+//========================================
+
+//@desc 更新用户信息
+//@class User
+//@method UpdateInfo
+//请求服务端-更新用户信息
+message RequestUserUpdateInfo{
+    BiuRpc.Base.Request base = 1;
+    string nickname = 2; //昵称
+    string avatarPictureToken = 3; //头像
+    BiuRpc.Base.SignUserSex sex = 4; //性别
+    string birthday = 5; //生日（时间戳）
+    string interest = 6; //兴趣ID（小写逗号拼接）
+}
+//返回客户端-更新用户信息
+message ResponseUserUpdateInfo{
+    BiuRpc.Base.Response base = 1;
+    BiuRpc.Base.User userInfo = 2;//用户信息
+}
+
+//请求服务端
+//@desc 获取用户信息
+//@class User
+//@method GetInfo
+//请求服务端-获取用户信息
+message RequestUserGetInfo{
+    BiuRpc.Base.Request base = 1;
+    string userId = 2; //用户ID
+}
+//返回客户端-获取用户信息
+message ResponseUserGetInfo{
+    BiuRpc.Base.Response base = 1;
+    BiuRpc.Base.User userInfo = 2; //用户名
+}
+
+//@desc 用户登录
+//@class User
+//@method Login
+//请求服务端
+message RequestUserLogin{
+    BiuRpc.Base.Request base = 1;
+    string username = 2; //用户名
+    string password = 3; //密码
+}
+//返回客户端
+message ResponseUserLogin{
+    BiuRpc.Base.Response base = 1;
+    string sessionId = 2;//会话Id
+    int32 sessionType = 3;//会话类型
+    string token = 4;//令牌
+    BiuRpc.Base.User userInfo = 5; //用户信息
+}
+
+//@desc 用户退出登录
+//@class User
+//@method Logout
+//请求服务端-退出
+message RequestUserLogout{
+    BiuRpc.Base.Request base = 1;
+}
+//返回客户端-退出
+message ResponseUserLogout{
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 用户注册
+//@class User
+//@method Register
+//请求服务端-退出
+message RequestUserRegister{
+    BiuRpc.Base.Request base = 1;
+    string username = 2; //用户名
+    string email = 3; //邮箱
+    string password = 4; //密码
+    string graphVerificationCode = 5; //图形验证码
+    string firstname = 6; //名
+    string lastname = 7; //姓
+}
+//返回客户端-退出
+message ResponseUserRegister{
+    BiuRpc.Base.Response base = 1;
+    BiuRpc.Base.User userInfo = 5; //用户信息
+}
+
+//@desc 修改登录密码
+//@class User
+//@method ChangePassword
+//请求服务端
+message RequestUserChangePassword {
+    BiuRpc.Base.Request base = 1;
+    string password = 2; //当前登录密码
+    string newPassword = 3; //新登录密码
+}
+//返回客户端
+message ResponseUserChangePassword {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 用手机号、邮箱找回密码发送验证码（步骤1）
+//@class User
+//@method ForgotPasswordStep1
+//请求服务端
+message RequestUserForgotPasswordStep1 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+    string email = 3; //邮箱
+}
+//返回客户端
+message ResponseUserForgotPasswordStep1 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 用手机号、邮箱找回密码（步骤2）
+//@class User
+//@method ForgotPasswordStep2
+//请求服务端
+message RequestUserForgotPasswordStep2 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+    string email = 3; //邮箱
+    string verificationCode = 4; //验证码
+    string newPassword = 5; //新密码
+}
+//返回客户端
+message ResponseUserForgotPasswordStep2 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 手机、邮箱验证码登陆发送验证码（步骤1）
+//@class User
+//@method VerificationLoginStep1
+//请求服务端
+message RequestUserVerificationLoginStep1 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+    string email = 3; //邮箱
+}
+//返回客户端
+message ResponseUserVerificationLoginStep1 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 手机、邮箱验证码登陆（步骤2）
+//@class User
+//@method VerificationLoginStep2
+//请求服务端
+message RequestUserVerificationLoginStep2 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+    string email = 3; //邮箱
+    string verificationCode = 4; //验证码
+    string graphVerificationCode = 5; //图形验证码
+    string password = 6; //设置密码
+    string avatarToken = 7; //用户头像的图片Token
+    string nickname = 8; //用户的昵称
+    string wechatAccount = 9; //微信unionId
+    string qqAccount = 10; //qq unionId
+
+}
+//返回客户端
+message ResponseUserVerificationLoginStep2 {
+    BiuRpc.Base.Response base = 1;
+    string sessionId = 2;//会话Id
+    int32 sessionType = 3;//会话类型
+    string token = 4;//令牌
+    BiuRpc.Base.User userInfo = 5; //用户信息
+}
+
+//@desc 绑定手机获取验证码（步骤1）
+//@class User
+//@method BindMobileStep1
+//请求服务端
+message RequestUserBindMobileStep1 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+}
+//返回客户端
+message ResponseUserBindMobileStep1 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 绑定手机（步骤2）
+//@class User
+//@method BindMobileStep2
+//请求服务端
+message RequestUserBindMobileStep2 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+    string verificationCode = 3; //验证码
+}
+//返回客户端
+message ResponseUserBindMobileStep2 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 绑定邮箱（步骤1）
+//@class User
+//@method BindEmailStep1
+//请求服务端
+message RequestUserBindEmailStep1 {
+    BiuRpc.Base.Request base = 1;
+    string email = 2; //邮箱
+}
+//返回客户端
+message ResponseUserBindEmailStep1 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 绑定邮箱（步骤2）
+//@class User
+//@method BindEmailStep2
+//请求服务端
+message RequestUserBindEmailStep2 {
+    BiuRpc.Base.Request base = 1;
+    string email = 2; //邮箱
+    string verificationCode = 3; //验证码
+}
+//返回客户端
+message ResponseUserBindEmailStep2 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 解绑手机获取验证码（步骤1）
+//@class User
+//@method UnbindMobileStep1
+//请求服务端
+message RequestUserUnbindMobileStep1 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+}
+//返回客户端
+message ResponseUserUnbindMobileStep1 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 解绑手机（步骤2）
+//@class User
+//@method UnbindMobileStep2
+//请求服务端
+message RequestUserUnbindMobileStep2 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+    string verificationCode = 3; //验证码
+}
+//返回客户端
+message ResponseUserUnbindMobileStep2 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 修改绑定手机获取验证码（步骤1）发旧手机验证码
+//@class User
+//@method ChangeMobileStep1
+//请求服务端
+message RequestUserChangeMobileStep1 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+}
+//返回客户端
+message ResponseUserChangeMobileStep1 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 修改绑定手机获取新手机号验证码（步骤2）旧手机号验证
+//@class User
+//@method ChangeMobileStep2
+//请求服务端
+message RequestUserChangeMobileStep2 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+    string verificationCode = 3; //手机验证码
+}
+//返回客户端
+message ResponseUserChangeMobileStep2 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 修改绑定手机绑定新手机（步骤3）发送新手机验证码
+//@class User
+//@method ChangeMobileStep3
+//请求服务端
+message RequestUserChangeMobileStep3 {
+    BiuRpc.Base.Request base = 1;
+    string mobile = 2; //手机号
+}
+//返回客户端
+message ResponseUserChangeMobileStep3 {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 修改绑定手机绑定新手机（步骤4）新手机号验证
+//@class User
+//@method ChangeMobileBind
+//请求服务端
+message RequestUserChangeMobileBind {
+    BiuRpc.Base.Request base = 1;
+    string newMobile = 2; //新手机号
+    string newVerificationCode = 3; //验证码
+}
+//返回客户端
+message ResponseUserChangeMobileBind {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 新手学习
+//@class User
+//@method BindStudy
+//请求服务端
+message RequestUserBindStudy {
+    BiuRpc.Base.Request base = 1;
+}
+//返回客户端
+message ResponseUserBindStudy {
+    BiuRpc.Base.Response base = 1;
+}
+
+//@desc 微信用户登陆
+//@class User
+//@method WechatLogin
+//请求服务端
+message RequestUserWechatLogin{
+    BiuRpc.Base.Request base = 1;
+    string wechatAccount = 2; //微信的unionId
+}
+//返回客户端
+message ResponseUserWechatLogin{
+    BiuRpc.Base.Response base = 1;
+    string sessionId = 2;//会话Id
+    string token = 3;//令牌
+    BiuRpc.Base.User userInfo = 4;
+}
+
+//@desc 亚马逊用户登陆
+//@class User
+//@method AmazonLogin
+//请求服务端
+message RequestUserAmazonLogin {
+    BiuRpc.Base.Request base = 1;
+    string amazonAccount = 2; //亚马逊的用户ID
+    string amazonUsername = 3; //亚马逊的用户名
+    string amazonEmail = 4; //亚马逊的邮箱
+    string amazonAccessToken = 5; //亚马逊的访问Token
+}
+//返回客户端
+message ResponseUserAmazonLogin {
+    BiuRpc.Base.Response base = 1;
+    string sessionId = 2;//会话Id
+    string token = 3;//令牌
+    BiuRpc.Base.User userInfo = 4;
+}
+
+
+//@desc Facebook用户登陆
+//@class User
+//@method FacebookLogin
+//请求服务端
+message RequestUserFacebookLogin {
+    BiuRpc.Base.Request base = 1;
+    string facebookAccount = 2; //Facebook的用户ID
+}
+//返回客户端
+message ResponseUserFacebookLogin {
+    BiuRpc.Base.Response base = 1;
+    string sessionId = 2;//会话Id
+    string token = 3;//令牌
+    BiuRpc.Base.User userInfo = 4;
+}
+
+//========================================
+//用户中心(User) end
+//========================================
+
