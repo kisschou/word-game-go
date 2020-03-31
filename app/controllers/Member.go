@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"wordgame/app/models"
+	. "wordgame/library/cache"
 	. "wordgame/library/encrypt"
 )
 
@@ -45,11 +46,15 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	RedisSelectDb(2)
+	redisData := Redis.LRange("order:reward:json", 0, 20).Val()
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":        true,
 		"md5":           Md5("123456"),
 		"memberList":    memberList,
 		"memberAddress": memberAddress,
+		"redis":         redisData,
 		"message":       "success",
 	})
 }
