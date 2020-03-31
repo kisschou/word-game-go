@@ -6,12 +6,31 @@ import (
 	"net/http"
 	"wordgame/app/models"
 	. "wordgame/library/cache"
-	. "wordgame/library/encrypt"
 )
 
 func Ping(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Pong",
+	})
+}
+
+func UAuth(c *gin.Context) {
+	header := c.Request.Header
+
+	var member models.User
+	err := c.BindJSON(&member)
+
+	if err != nil {
+		fmt.Printf("mysql connect error %v", err)
+	}
+
+	memberInfo, err := member.Login("yxbobo", "111111")
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":    "success",
+		"header":     header["Authorization"],
+		"body":       c.PostForm("username"),
+		"memberInfo": memberInfo,
 	})
 }
 
@@ -51,7 +70,6 @@ func Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":        true,
-		"md5":           Md5("123456"),
 		"memberList":    memberList,
 		"memberAddress": memberAddress,
 		"redis":         redisData,
