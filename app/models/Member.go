@@ -49,6 +49,9 @@ type User struct {
 	Status            int32   `json:"status" binding:"required"`
 }
 
+func updateLoginInfo(memberInfo *User) {
+}
+
 func (info *User) Login(username string, password string) (memberInfo *User, err error) {
 	memberInfo = new(User)
 	result, err := Engine.Where("username=?", username).Get(memberInfo)
@@ -63,10 +66,14 @@ func (info *User) Login(username string, password string) (memberInfo *User, err
 		memberInfo = nil
 		return
 	}
+
 	// 检测用户是否有昵称
 	if len(memberInfo.Nickname) < 1 {
-		_, _ = Engine.Where("", memberInfo.Id).Update()
+		_, _ = Engine.Where("id=?", memberInfo.Id).Update(&User{Nickname: memberInfo.Username})
 	}
+
+	// 更新登录信息
+	updateLoginInfo(memberInfo)
 	return
 }
 
