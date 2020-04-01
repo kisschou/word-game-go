@@ -1,6 +1,10 @@
 package models
 
 import (
+	"math/rand"
+	"strconv"
+	"time"
+	. "wordgame/library/cache"
 	. "wordgame/library/database"
 	. "wordgame/library/encrypt"
 )
@@ -49,7 +53,20 @@ type User struct {
 	Status            int32   `json:"status" binding:"required"`
 }
 
+func buildToken(sid string) string {
+	sid += "sot31OWgWOFpUXA0gKQ6aIi3Y5iQ9LiRS8sKGWlVdJx9ca93SgOuSGGf3ygEYqPB"
+	sid += strconv.FormatInt(time.Now().Unix(), 10)
+	rand.Seed(time.Now().UnixNano())
+	sid += strconv.Itoa(rand.Intn(9999))
+	return Md5(sid)
+}
+
+// 更新用户信息
 func updateLoginInfo(memberInfo *User) {
+	sid := SessionId()
+	token := buildToken(sid)
+
+	// 清空同一个会话下的其他用户的登录信息
 }
 
 func (info *User) Login(username string, password string) (memberInfo *User, err error) {
