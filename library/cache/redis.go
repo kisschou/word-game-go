@@ -4,7 +4,7 @@ import (
 	"fmt"
 	RedisModel "github.com/go-redis/redis/v7"
 	"github.com/rs/xid"
-	"time"
+	_ "time"
 )
 
 type RedisInfo struct{}
@@ -31,21 +31,22 @@ func RedisSelectDb(index int) {
 }
 
 func SessionId() string {
-	// 切换到db(0)
-	RedisSelectDb(0)
+	// RedisSelectDb(0)
 
-	key := "session:"
+	// key := "session:"
 	id := xid.New()
 	sessionId := id.String()
 
-	for {
-		sessionId = id.String()
-		key += sessionId
-		if Redis.Exists(key).Val() == 0 {
-			Redis.SetNX(key, "", time.Duration(86400)*time.Second)
-			break
+	/*
+		for {
+			sessionId = id.String()
+			key += sessionId
+			if Redis.Exists(key).Val() == 0 {
+				Redis.SetNX(key, "", time.Duration(86400)*time.Second)
+				break
+			}
 		}
-	}
+	*/
 
 	return sessionId
 }

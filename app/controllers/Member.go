@@ -28,7 +28,8 @@ func UAuth(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":    "success",
-		"header":     header["Authorization"],
+		"header":     header,
+		"IpAddr":     c.ClientIP(),
 		"body":       c.PostForm("username"),
 		"memberInfo": memberInfo,
 	})

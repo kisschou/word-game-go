@@ -8,7 +8,10 @@
 
 > 主要用于存储用户相关的数据
 
+* session数据
+
 | key  | type | desc |
 | ---- | ---- | ---- |
-|      |      |      |
+| session:user:{:openId} | hash | 在线用户信息列表 |
 
+#### DB(1)

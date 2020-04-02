@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"math/rand"
 	"strconv"
 	"time"
@@ -63,33 +64,42 @@ func buildToken(sid string) string {
 
 // 更新用户信息
 func updateLoginInfo(memberInfo *User) {
+	key := "session:user:"
+	key += memberInfo.OpenId
 	sid := SessionId()
 	token := buildToken(sid)
 
 	// 清空同一个会话下的其他用户的登录信息
 }
 
+// 用户登录
+// 1. 通过用户名或手机号或邮箱获取用户信息, 并判断用户是否存在或锁定, 及密码是否正确
+// 2. 用户信息完整性检测及填充
+// 3. 更新登录信息
 func (info *User) Login(username string, password string) (memberInfo *User, err error) {
 	memberInfo = new(User)
+
 	result, err := Engine.Where("username=?", username).Get(memberInfo)
 	if !result {
 		result, err = Engine.Where("mobile=?", username).Get(memberInfo)
+	}
+	if !result {
+		result, err = Engine.Where("emial=?", username).Get(memberInfo)
 	}
 	if !result || memberInfo.Status == 0 {
 		memberInfo = nil
 		return
 	}
+
 	if ThinkUcenterMd5(password, "sot31OWgWOFpUXA0gKQ6aIi3Y5iQ9LiRS8sKGWlVdJx9ca93SgOuSGGf3ygEYqPB", memberInfo.Salt) != memberInfo.Password {
 		memberInfo = nil
 		return
 	}
 
-	// 检测用户是否有昵称
 	if len(memberInfo.Nickname) < 1 {
 		_, _ = Engine.Where("id=?", memberInfo.Id).Update(&User{Nickname: memberInfo.Username})
 	}
 
-	// 更新登录信息
 	updateLoginInfo(memberInfo)
 	return
 }
