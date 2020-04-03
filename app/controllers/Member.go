@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"wordgame/app/models"
-	. "wordgame/library/cache"
 )
 
 func Ping(c *gin.Context) {
@@ -15,39 +14,37 @@ func Ping(c *gin.Context) {
 }
 
 func UAuth(c *gin.Context) {
-	header := c.Request.Header
-
 	var member models.User
-	err := c.BindJSON(&member)
+	err := member.UAuth(c.PostForm("token"))
 
 	if err != nil {
-		fmt.Printf("mysql connect error %v", err)
+		fmt.Println(err)
+		c.JSON(310, gin.H{"message": string(err.Error())})
+		return
 	}
 
-	memberInfo, err := member.Login("yxbobo", "111111")
-
 	c.JSON(http.StatusOK, gin.H{
-		"message":    "success",
-		"header":     header,
-		"IpAddr":     c.ClientIP(),
-		"body":       c.PostForm("username"),
-		"memberInfo": memberInfo,
+		"message": "success",
+		"header":  c.Request.Header,
+		"IpAddr":  c.ClientIP(),
+		"body":    c.PostForm("token"),
 	})
 }
 
+func refreshToken(c *gin.Context) {
+}
+
 func Login(c *gin.Context) {
-	var member models.User     // 定义json 变量 数据结构类型 为 (models/member).MemberInfo
-	err := c.BindJSON(&member) // 获取前台传过来的json数据
+	var member models.User // 定义json 变量 数据结构类型 为 (models/member).MemberInfo
+
+	member.Username = c.PostForm("username")
+	member.Password = c.PostForm("password")
+
+	memberInfo, err := member.Login()
 
 	if err != nil {
-		fmt.Printf("mysql connect error %v", err)
-	}
-
-	memberList, err := member.FindAll()
-
-	if err != nil {
-		fmt.Printf("database error %v", err)
-		fmt.Printf("database error %v", memberList)
+		fmt.Println(err)
+		c.JSON(310, gin.H{"message": string(err.Error())})
 		return
 	}
 
@@ -58,23 +55,9 @@ func Login(c *gin.Context) {
 		fmt.Printf("mysql connect error %v", err)
 	}
 
-	memberAddress, err := address.FindAll()
-
-	if err != nil {
-		fmt.Printf("database error %v", err)
-		fmt.Printf("database error %v", memberList)
-		return
-	}
-
-	RedisSelectDb(2)
-	redisData := Redis.LRange("order:reward:json", 0, 20).Val()
-
 	c.JSON(http.StatusOK, gin.H{
-		"status":        true,
-		"memberList":    memberList,
-		"memberAddress": memberAddress,
-		"redis":         redisData,
-		"message":       "success",
+		"data":    memberInfo,
+		"message": "success",
 	})
 }
 

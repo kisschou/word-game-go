@@ -12,6 +12,7 @@
 
 | key  | type | desc |
 | ---- | ---- | ---- |
+| session:{:token} | string | session在用 |
 | session:user:{:openId} | hash | 在线用户信息列表 |
 
 #### DB(1)

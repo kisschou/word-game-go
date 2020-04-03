@@ -2,12 +2,16 @@ package models
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 	. "wordgame/library/cache"
 	. "wordgame/library/database"
 	. "wordgame/library/encrypt"
+	. "wordgame/library/unit"
 )
 
 type User struct {
@@ -64,19 +68,131 @@ func buildToken(sid string) string {
 
 // 更新用户信息
 func updateLoginInfo(memberInfo *User) {
-	key := "session:user:"
-	key += memberInfo.OpenId
 	sid := SessionId()
 	token := buildToken(sid)
 
-	// 清空同一个会话下的其他用户的登录信息
+	// 删除前者登录数据
+	key := "session:user:"
+	key += memberInfo.OpenId
+	if Redis.Exists(key).Val() == 1 {
+		oldToken := Redis.HGet(key, "token").Val()
+		key = "session:"
+		key += oldToken
+		Redis.Del(key)
+	}
+
+	// 记录Token和OpenId的关联到Redis
+	key = "session:"
+	key += token
+	// Redis.SetNX(key, memberInfo.OpenId, time.Duration(120)*time.Second)
+	Redis.Set(key, memberInfo.OpenId, 0)
+
+	// 记录用户信息到Redis
+	key = "session:user:"
+	key += memberInfo.OpenId
+
+	// Struct2Map
+	memberInfoMap := Struct2Map(memberInfo)
+	memberInfoMap["session_id"] = sid
+	memberInfoMap["token"] = token
+
+	for k, v := range memberInfoMap {
+		Redis.HMSet(key, k, v)
+	}
+	if strings.Contains(Redis.TTL(key).Val().String(), "ns") {
+		Redis.Expire(key, time.Duration(86400)*time.Second)
+	}
+}
+
+// session判断规则:
+// 说明:
+// session:{:token} - 表示当前未过期的的session value:string({:openId}) ttl:-1
+// session:user:{:openId} - 表示已经缓存的用户信息列表 value:hash({用户信息k-v}) ttl:86400s
+// 判断流程:
+// 1. 判断session:{:token}是否存在
+// 2. 取出{:openId}判断session:user:{:openId}是否存在
+// 返回:
+// 判断(1)错误发生时 如果请求没有携带openId则判定为 未登录
+// 判断(2)错误发生时 如果session存在, 则自动缓存用户信息
+func (info *User) UAuth(token string) (err error) {
+	if len(token) < 1 {
+		err = errors.New("用户未登录")
+		return
+	}
+
+	key := "session:"
+	key += token
+	// 未登录
+	if Redis.Exists(key).Val() != 1 {
+		err = errors.New("用户未登录")
+		return
+	}
+
+	openId := Redis.Get(key).Val()
+	key = "session:user:"
+	key += openId
+	if Redis.Exists(key).Val() != 1 {
+		// 缓存用户信息
+		info.OpenId = openId
+		_, err = info.GetInfo()
+		if err != nil {
+			return
+		}
+	}
+
+	return
+}
+
+func (info *User) GetInfo() (memberInfo *User, err error) {
+	openId := info.OpenId
+	if len(openId) < 1 {
+		err = errors.New("未找到相关用户数据")
+		return
+	}
+
+	// 1. 判断redis中是否存在
+	key := "session:user:"
+	key += openId
+	if Redis.Exists(key).Val() == 1 {
+		memberInfoMap := Redis.HGetAll(key).Val()
+		j, _ := json.Marshal(memberInfoMap)
+		json.Unmarshal(j, &memberInfo)
+		return
+	}
+
+	// 2. 从数据库中获取
+	memberInfo = new(User)
+	result, err := Engine.Where("open_id=?", openId).Get(memberInfo)
+	if !result {
+		err = errors.New("未找到相关用户数据")
+		return
+	}
+
+	// 3. 缓存到redis
+	memberInfoMap := Struct2Map(memberInfo)
+	for k, v := range memberInfoMap {
+		Redis.HMSet(key, k, v)
+	}
+	if strings.Contains(Redis.TTL(key).Val().String(), "ns") {
+		Redis.Expire(key, time.Duration(86400)*time.Second)
+	}
+
+	return
 }
 
 // 用户登录
 // 1. 通过用户名或手机号或邮箱获取用户信息, 并判断用户是否存在或锁定, 及密码是否正确
 // 2. 用户信息完整性检测及填充
 // 3. 更新登录信息
-func (info *User) Login(username string, password string) (memberInfo *User, err error) {
+func (info *User) Login() (memberInfo *User, err error) {
+	username := info.Username
+	password := info.Password
+	if len(username) < 1 || len(password) < 6 {
+		fmt.Println(info)
+		err = errors.New("参数错误")
+		return
+	}
+
 	memberInfo = new(User)
 
 	result, err := Engine.Where("username=?", username).Get(memberInfo)
@@ -87,12 +203,12 @@ func (info *User) Login(username string, password string) (memberInfo *User, err
 		result, err = Engine.Where("emial=?", username).Get(memberInfo)
 	}
 	if !result || memberInfo.Status == 0 {
-		memberInfo = nil
+		err = errors.New("用户不存在或者已经锁定!")
 		return
 	}
 
 	if ThinkUcenterMd5(password, "sot31OWgWOFpUXA0gKQ6aIi3Y5iQ9LiRS8sKGWlVdJx9ca93SgOuSGGf3ygEYqPB", memberInfo.Salt) != memberInfo.Password {
-		memberInfo = nil
+		err = errors.New("密码错误!")
 		return
 	}
 
