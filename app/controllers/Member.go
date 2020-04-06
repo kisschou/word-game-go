@@ -31,7 +31,19 @@ func UAuth(c *gin.Context) {
 	})
 }
 
-func refreshToken(c *gin.Context) {
+func GetInfo(c *gin.Context) {
+	var member models.User // 定义json 变量 数据结构类型 为 (models/member).MemberInfo
+	member.OpenId = c.PostForm("openId")
+	memberInfo, err := member.GetInfo()
+	if err != nil {
+		c.JSON(310, gin.H{"message": string(err.Error())})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":    memberInfo,
+		"message": "success",
+	})
 }
 
 func Login(c *gin.Context) {
@@ -43,7 +55,6 @@ func Login(c *gin.Context) {
 	memberInfo, err := member.Login()
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(310, gin.H{"message": string(err.Error())})
 		return
 	}

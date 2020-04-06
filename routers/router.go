@@ -18,6 +18,7 @@ func InitRouter() *gin.Engine {
 		v1.GET("/ping", controllers.Ping)
 		v1.POST("/uauth", controllers.UAuth)
 		v1.POST("/login", controllers.Login)
+		v1.POST("/info", controllers.GetInfo)
 		v1.POST("/register", controllers.Register)
 	}
 

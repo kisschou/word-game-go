@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
-	"strings"
+	_ "strings"
 	"time"
 	. "wordgame/library/cache"
 	. "wordgame/library/database"
@@ -67,7 +67,7 @@ func buildToken(sid string) string {
 }
 
 // 更新用户信息
-func updateLoginInfo(memberInfo *User) {
+func updateLoginInfo(memberInfo *User) map[string]interface{} {
 	sid := SessionId()
 	token := buildToken(sid)
 
@@ -99,9 +99,13 @@ func updateLoginInfo(memberInfo *User) {
 	for k, v := range memberInfoMap {
 		Redis.HMSet(key, k, v)
 	}
-	if strings.Contains(Redis.TTL(key).Val().String(), "ns") {
-		Redis.Expire(key, time.Duration(86400)*time.Second)
-	}
+	/*
+		if strings.Contains(Redis.TTL(key).Val().String(), "ns") {
+			Redis.Expire(key, time.Duration(86400)*time.Second)
+		}
+	*/
+
+	return memberInfoMap
 }
 
 // session判断规则:
@@ -143,7 +147,7 @@ func (info *User) UAuth(token string) (err error) {
 	return
 }
 
-func (info *User) GetInfo() (memberInfo *User, err error) {
+func (info *User) GetInfo() (memberInfoMap map[string]interface{}, err error) {
 	openId := info.OpenId
 	if len(openId) < 1 {
 		err = errors.New("未找到相关用户数据")
@@ -154,14 +158,16 @@ func (info *User) GetInfo() (memberInfo *User, err error) {
 	key := "session:user:"
 	key += openId
 	if Redis.Exists(key).Val() == 1 {
-		memberInfoMap := Redis.HGetAll(key).Val()
-		j, _ := json.Marshal(memberInfoMap)
-		json.Unmarshal(j, &memberInfo)
+		data := Redis.HGetAll(key).Val()
+		j, _ := json.Marshal(data)
+		json.Unmarshal(j, &memberInfoMap)
+		delete(memberInfoMap, "session_id")
+		delete(memberInfoMap, "token")
 		return
 	}
 
 	// 2. 从数据库中获取
-	memberInfo = new(User)
+	memberInfo := new(User)
 	result, err := Engine.Where("open_id=?", openId).Get(memberInfo)
 	if !result {
 		err = errors.New("未找到相关用户数据")
@@ -169,13 +175,15 @@ func (info *User) GetInfo() (memberInfo *User, err error) {
 	}
 
 	// 3. 缓存到redis
-	memberInfoMap := Struct2Map(memberInfo)
+	memberInfoMap = Struct2Map(memberInfo)
 	for k, v := range memberInfoMap {
 		Redis.HMSet(key, k, v)
 	}
-	if strings.Contains(Redis.TTL(key).Val().String(), "ns") {
-		Redis.Expire(key, time.Duration(86400)*time.Second)
-	}
+	/*
+		if strings.Contains(Redis.TTL(key).Val().String(), "ns") {
+			Redis.Expire(key, time.Duration(86400)*time.Second)
+		}
+	*/
 
 	return
 }
@@ -184,7 +192,7 @@ func (info *User) GetInfo() (memberInfo *User, err error) {
 // 1. 通过用户名或手机号或邮箱获取用户信息, 并判断用户是否存在或锁定, 及密码是否正确
 // 2. 用户信息完整性检测及填充
 // 3. 更新登录信息
-func (info *User) Login() (memberInfo *User, err error) {
+func (info *User) Login() (memberInfoMap map[string]interface{}, err error) {
 	username := info.Username
 	password := info.Password
 	if len(username) < 1 || len(password) < 6 {
@@ -193,7 +201,7 @@ func (info *User) Login() (memberInfo *User, err error) {
 		return
 	}
 
-	memberInfo = new(User)
+	memberInfo := new(User)
 
 	result, err := Engine.Where("username=?", username).Get(memberInfo)
 	if !result {
@@ -216,7 +224,7 @@ func (info *User) Login() (memberInfo *User, err error) {
 		_, _ = Engine.Where("id=?", memberInfo.Id).Update(&User{Nickname: memberInfo.Username})
 	}
 
-	updateLoginInfo(memberInfo)
+	memberInfoMap = updateLoginInfo(memberInfo)
 	return
 }
 
