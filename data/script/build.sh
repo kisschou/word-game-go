@@ -5,11 +5,18 @@ proto_path=$root_path/data/protobuf/proto
 out_path=$root_path/data/rpc
 platform=golang
 
-if [ ! -d $out_path/$platform ]; then
-    mkdir -p $out_path/$platform
+## 判断目录是否存在
+if [ ! -d $out_path"/"$platform ];then
+    mkdir -p $out_path"/"$platform
+else
+    for file in `ls $out_path"/"$platform`; do
+        rm -rf $out_path"/"$platform"/"$file
+    done
 fi
 
-for file in $proto_path/*
-do
-    protoc --go_out=$out_path/$platform $file
+## 解析指定目录下的所有proto文件
+for file in `ls $proto_path`; do
+    if [ "${file##*.}" = "proto" ]; then
+        protoc --proto_path=$proto_path --go_out=$out_path"/"$platform $proto_path"/"$file
+    fi
 done
