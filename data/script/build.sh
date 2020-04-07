@@ -17,6 +17,9 @@ fi
 ## 解析指定目录下的所有proto文件
 for file in `ls $proto_path`; do
     if [ "${file##*.}" = "proto" ]; then
-        protoc --proto_path=$proto_path --go_out=$out_path"/"$platform $proto_path"/"$file
+        if [ ! -d $out_path"/"$platform"/"${file%%.*} ]; then
+            mkdir $out_path"/"$platform"/"${file%%.*}
+        fi
+        protoc --proto_path=$proto_path --go_out=$out_path"/"$platform"/"${file%%.*} $proto_path"/"$file
     fi
 done
