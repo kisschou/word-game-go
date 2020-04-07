@@ -3,10 +3,12 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"wordgame/app/controllers"
+	"wordgame/library/logger"
 )
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
+	r.Use(logger.LoggerAccess())
 
 	r.Static("/public", "./public")
 	// r.LoadHTMLGlob("view/**/*")
