@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"wordgame/app/models"
@@ -18,7 +17,6 @@ func UAuth(c *gin.Context) {
 	err := member.UAuth(c.PostForm("token"))
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(310, gin.H{"message": string(err.Error())})
 		return
 	}
@@ -61,10 +59,6 @@ func Login(c *gin.Context) {
 
 	var address models.UserAddress
 	err = c.BindJSON(&address)
-
-	if err != nil {
-		fmt.Printf("mysql connect error %v", err)
-	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"data":    memberInfo,

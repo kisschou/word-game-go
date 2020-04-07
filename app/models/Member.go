@@ -3,7 +3,6 @@ package models
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"math/rand"
 	"strconv"
 	_ "strings"
@@ -142,6 +141,15 @@ func (info *User) UAuth(token string) (err error) {
 		if err != nil {
 			return
 		}
+	} else {
+		userToken := Redis.HGet(key, "token").Val()
+		if userToken != token {
+			key = "session:"
+			key += token
+			Redis.Del(key)
+			err = errors.New("用户未登录")
+			return
+		}
 	}
 
 	return
@@ -196,7 +204,6 @@ func (info *User) Login() (memberInfoMap map[string]interface{}, err error) {
 	username := info.Username
 	password := info.Password
 	if len(username) < 1 || len(password) < 6 {
-		fmt.Println(info)
 		err = errors.New("参数错误")
 		return
 	}
