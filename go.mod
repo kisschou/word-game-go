@@ -7,7 +7,7 @@ require (
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/go-xorm/xorm v0.7.9
-	github.com/golang/protobuf v1.3.5 // indirect
+	github.com/golang/protobuf v1.3.5
 	github.com/jinzhu/gorm v1.9.12
 	github.com/joho/godotenv v1.3.0
 	github.com/rs/xid v1.2.1

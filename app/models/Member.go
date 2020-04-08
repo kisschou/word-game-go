@@ -61,7 +61,7 @@ type User struct {
 	Status            int32   `json:"status" binding:"required"`
 }
 
-func buildProto(memberInfoMap map[string]interface{}) uint8 {
+func buildProto(memberInfoMap map[string]interface{}) (mData []byte, err error) {
 	r := BiuRpc_Base.Response{}
 	r.SessionId = ""
 	r.RequestId = ""
@@ -71,12 +71,29 @@ func buildProto(memberInfoMap map[string]interface{}) uint8 {
 	r.Code = 0
 	r.Msg = ""
 
+	avatar := BiuRpc_Base.Picture{}
+	avatar.Url = ""
+	avatar.Width = 0
+	avatar.Height = 0
+	avatar.Token = ""
+	avatar.DataType = 0
+	avatar.ContentType = ""
+
+	interestList := []*BiuRpc_Base.UserInterest{}
+	var i int32
+	for i = 0; i < 3; i++ {
+		interest := BiuRpc_Base.UserInterest{}
+		interest.Id = i
+		interest.Name = ""
+		interestList = append(interestList, &interest)
+	}
+
 	userInfo := BiuRpc_Base.User{}
 	userInfo.UserId = ""
 	userInfo.Username = ""
 	userInfo.Nickname = ""
 	userInfo.Email = ""
-	userInfo.Avatar = nil
+	userInfo.Avatar = &avatar
 	userInfo.Mobile = ""
 	userInfo.Realname = ""
 	userInfo.Sex = 0
@@ -88,36 +105,18 @@ func buildProto(memberInfoMap map[string]interface{}) uint8 {
 	userInfo.IsMobileVerify = false
 	userInfo.Firstname = ""
 	userInfo.Lastname = ""
-	/*
-		UserId               string          `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
-		Username             string          `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
-		Nickname             string          `protobuf:"bytes,3,opt,name=nickname,proto3" json:"nickname,omitempty"`
-		Email                string          `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`
-		Avatar               *Picture        `protobuf:"bytes,5,opt,name=avatar,proto3" json:"avatar,omitempty"`
-		Mobile               string          `protobuf:"bytes,6,opt,name=mobile,proto3" json:"mobile,omitempty"`
-		Realname             string          `protobuf:"bytes,7,opt,name=realname,proto3" json:"realname,omitempty"`
-		Sex                  SignUserSex     `protobuf:"varint,8,opt,name=sex,proto3,enum=BiuRpc.Base.SignUserSex" json:"sex,omitempty"`
-		Birthday             int32           `protobuf:"varint,9,opt,name=birthday,proto3" json:"birthday,omitempty"`
-		UnreadMessageCount   int32           `protobuf:"varint,10,opt,name=unreadMessageCount,proto3" json:"unreadMessageCount,omitempty"`
-		IsCertificate        int32           `protobuf:"varint,11,opt,name=isCertificate,proto3" json:"isCertificate,omitempty"`
-		IdCardNumber         string          `protobuf:"bytes,12,opt,name=idCardNumber,proto3" json:"idCardNumber,omitempty"`
-		IsEmailVerify        bool            `protobuf:"varint,13,opt,name=isEmailVerify,proto3" json:"isEmailVerify,omitempty"`
-		IsMobileVerify       bool            `protobuf:"varint,14,opt,name=isMobileVerify,proto3" json:"isMobileVerify,omitempty"`
-		Firstname            string          `protobuf:"bytes,15,opt,name=firstname,proto3" json:"firstname,omitempty"`
-		Lastname             string          `protobuf:"bytes,16,opt,name=lastname,proto3" json:"lastname,omitempty"`
-		CurrencyId           int32           `protobuf:"varint,17,opt,name=currencyId,proto3" json:"currencyId,omitempty"`
-		RegTime              int32           `protobuf:"varint,18,opt,name=regTime,proto3" json:"regTime,omitempty"`
-		LastLoginTime        int32           `protobuf:"varint,19,opt,name=lastLoginTime,proto3" json:"lastLoginTime,omitempty"`
-		Money                string          `protobuf:"bytes,20,opt,name=money,proto3" json:"money,omitempty"`
-		FreezeMoney          string          `protobuf:"bytes,21,opt,name=freezeMoney,proto3" json:"freezeMoney,omitempty"`
-		PowerScore           int32           `protobuf:"varint,22,opt,name=powerScore,proto3" json:"powerScore,omitempty"`
-		ScalperOrderCount    int32           `protobuf:"varint,23,opt,name=scalperOrderCount,proto3" json:"scalperOrderCount,omitempty"`
-		InterestList         []*UserInterest `protobuf:"bytes,24,rep,name=interestList,proto3" json:"interestList,omitempty"`
-		AmazonAccount        string          `protobuf:"bytes,25,opt,name=amazonAccount,proto3" json:"amazonAccount,omitempty"`
-		AmazonEmail          string          `protobuf:"bytes,26,opt,name=amazonEmail,proto3" json:"amazonEmail,omitempty"`
-		HasDrawalAccount     bool            `protobuf:"varint,27,opt,name=hasDrawalAccount,proto3" json:"hasDrawalAccount,omitempty"`
-		HasDrawalPwd         bool            `protobuf:"varint,28,opt,name=hasDrawalPwd,proto3" json:"hasDrawalPwd,omitempty"`
-	*/
+	userInfo.CurrencyId = 0
+	userInfo.RegTime = 0
+	userInfo.LastLoginTime = 0
+	userInfo.Money = ""
+	userInfo.FreezeMoney = ""
+	userInfo.PowerScore = 0
+	userInfo.ScalperOrderCount = 0
+	userInfo.InterestList = interestList
+	userInfo.AmazonAccount = ""
+	userInfo.AmazonEmail = ""
+	userInfo.HasDrawalAccount = false
+	userInfo.HasDrawalPwd = false
 
 	res := BiuRpc_Api.ResponseUserLogin{}
 	res.Base = &r
@@ -125,13 +124,12 @@ func buildProto(memberInfoMap map[string]interface{}) uint8 {
 	res.SessionType = 0
 	res.Token = ""
 	res.UserInfo = &userInfo
-	/*
-		Base                 *Response `protobuf:"bytes,1,opt,name=base,proto3" json:"base,omitempty"`
-		SessionId            string    `protobuf:"bytes,2,opt,name=sessionId,proto3" json:"sessionId,omitempty"`
-		SessionType          int32     `protobuf:"varint,3,opt,name=sessionType,proto3" json:"sessionType,omitempty"`
-		Token                string    `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
-		UserInfo             *User     `protobuf:"bytes,5,opt,name=userInfo,proto3" json:"userInfo,omitempty"`
-	*/
+
+	mData, err = proto.Marshal(&res)
+	if err != nil {
+		return
+	}
+	return
 }
 
 func buildToken(sid string) string {
