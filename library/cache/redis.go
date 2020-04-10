@@ -1,12 +1,12 @@
 package redis
 
 import (
-	"fmt"
 	RedisModel "github.com/go-redis/redis/v7"
 	"github.com/rs/xid"
 	_ "time"
 
 	"wordgame/library/config"
+	"wordgame/library/logger"
 )
 
 type RedisInfo struct{}
@@ -25,11 +25,9 @@ func init() {
 		DB:       0,
 	})
 
-	pong, err := Redis.Ping().Result()
+	_, err := Redis.Ping().Result()
 	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(pong)
+		logger.LoggerToFile("error", err.Error(), 0)
 	}
 }
 

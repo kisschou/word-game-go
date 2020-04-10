@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+
+	"wordgame/library/logger"
 )
 
 type Config struct {
@@ -45,6 +47,7 @@ func connect(conf *Config) (err error) {
 func (conf *Config) Get(key string) (value interface{}) {
 	err := connect(conf)
 	if err != nil {
+		logger.LoggerToFile("error", err.Error(), 0)
 		return nil
 	}
 
@@ -58,6 +61,7 @@ func (conf *Config) Get(key string) (value interface{}) {
 		}
 		err = connect(newConf)
 		if err != nil {
+			logger.LoggerToFile("error", err.Error(), 0)
 			return nil
 		}
 		key = strings.Join(match, ".")

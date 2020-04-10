@@ -2,11 +2,13 @@ package logger
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"os"
 	"path"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+
 	. "wordgame/library/encrypt"
 	. "wordgame/library/unit"
 )

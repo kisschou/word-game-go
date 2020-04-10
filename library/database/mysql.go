@@ -1,12 +1,12 @@
 package database
 
 import (
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"xorm.io/core"
 
 	"wordgame/library/config"
+	"wordgame/library/logger"
 )
 
 var Engine *xorm.Engine
@@ -24,16 +24,15 @@ func init() {
 	mysqlPrefix := c.Get("database.mysql.prefix").(string)
 
 	dsn := mysqlUser + ":" + mysqlPass + "@tcp(" + mysqlHost + ":" + mysqlPort + ")/" + mysqlDb + "?charset=" + mysqlCharset + "&parseTime=True&loc=Local&timeout=10ms"
-	fmt.Println(dsn)
 	Engine, err = xorm.NewEngine("mysql", dsn)
 
 	if err != nil {
-		fmt.Println(err)
+		logger.LoggerToFile("error", err.Error(), 0)
 		return
 	}
 
 	if err := Engine.Ping(); err != nil {
-		fmt.Println(err)
+		logger.LoggerToFile("error", err.Error(), 0)
 		return
 	}
 
