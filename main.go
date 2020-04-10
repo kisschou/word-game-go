@@ -1,14 +1,14 @@
 package main
 
 import (
-	"os"
-	_ "wordgame/config"
+	"wordgame/library/config"
 	_ "wordgame/library/database"
 	"wordgame/routers"
 )
 
 func main() {
 	r := routers.InitRouter()
-	port := os.Getenv("HTTP_PORT")
+	c := config.Config{}
+	port := c.Get("http_port").(string)
 	r.Run(":" + port)
 }

@@ -5,13 +5,27 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"xorm.io/core"
+
+	"wordgame/library/config"
 )
 
 var Engine *xorm.Engine
 
 func init() {
 	var err error
-	Engine, err = xorm.NewEngine("mysql", "root:root@tcp(127.0.0.1:3306)/biushop?charset=utf8mb4&parseTime=True&loc=Local&timeout=10ms")
+
+	c := config.Config{}
+	mysqlUser := c.Get("database.mysql.user").(string)
+	mysqlPass := c.Get("database.mysql.pass").(string)
+	mysqlHost := c.Get("database.mysql.host").(string)
+	mysqlPort := c.Get("database.mysql.port").(string)
+	mysqlDb := c.Get("database.mysql.db").(string)
+	mysqlCharset := c.Get("database.mysql.charset").(string)
+	mysqlPrefix := c.Get("database.mysql.prefix").(string)
+
+	dsn := mysqlUser + ":" + mysqlPass + "@tcp(" + mysqlHost + ":" + mysqlPort + ")/" + mysqlDb + "?charset=" + mysqlCharset + "&parseTime=True&loc=Local&timeout=10ms"
+	fmt.Println(dsn)
+	Engine, err = xorm.NewEngine("mysql", dsn)
 
 	if err != nil {
 		fmt.Println(err)
@@ -30,5 +44,5 @@ func init() {
 	// 设置最大打开连接数
 	Engine.SetMaxOpenConns(5)
 	// 名称映射规则主要负责结构体名称到表名和结构体field到表字段的名称映射
-	Engine.SetTableMapper(core.NewPrefixMapper(core.SnakeMapper{}, "biu_"))
+	Engine.SetTableMapper(core.NewPrefixMapper(core.SnakeMapper{}, mysqlPrefix))
 }

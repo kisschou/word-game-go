@@ -5,6 +5,8 @@ import (
 	RedisModel "github.com/go-redis/redis/v7"
 	"github.com/rs/xid"
 	_ "time"
+
+	"wordgame/library/config"
 )
 
 type RedisInfo struct{}
@@ -12,9 +14,14 @@ type RedisInfo struct{}
 var Redis *RedisModel.Client
 
 func init() {
+	c := config.Config{}
+	redisHost := c.Get("redis.master.host").(string)
+	redisPort := c.Get("redis.master.port").(string)
+	redisPass := c.Get("redis.master.pass").(string)
+
 	Redis = RedisModel.NewClient(&RedisModel.Options{
-		Addr:     "localhost:6379",
-		Password: "",
+		Addr:     redisHost + ":" + redisPort,
+		Password: redisPass,
 		DB:       0,
 	})
 
