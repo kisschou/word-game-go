@@ -24,6 +24,7 @@ https://juejin.im/post/5d2a85f5f265da1bd2611b31
 9. [viper](https://github.com/spf13/viper) - 配置解决方案，拥有丰富的特性 [相关文档](https://juejin.im/post/5e24f1bc518825263237edb2)
 10. [cobra](https://github.com/spf13/cobra/cobra) - 命令行程序库, 可以用来编写命令行程序 [相关文档](https://juejin.im/post/5e22cfb35188252ca21bb781)
 11. [flag](https://golang.org/pkg/flag/) - 用于解析命令行选项 [相关文档](https://juejin.im/post/5e1b33da51882536a627f17b)
+12. [go-app](https://github.com/maxence-charriere/go-app/v6) - 是一个使用 Go + WebAssembly 技术编写渐进式 Web 应用的库 [相关文档](https://juejin.im/post/5ea1ac82f265da47b55508b7?utm_source=gold_browser_extension)
 
 ## Docs
 0. [优秀的开源项目](https://juejin.im/entry/5c00e5fce51d4550c76d9097)
