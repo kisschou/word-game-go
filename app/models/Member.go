@@ -13,6 +13,7 @@ import (
 	"wordgame/data/rpc/golang/base"
 
 	. "wordgame/library/cache/redis"
+	Session "wordgame/library/cache/session"
 	"wordgame/library/config"
 	. "wordgame/library/database"
 	. "wordgame/library/encrypt"
@@ -145,7 +146,7 @@ func buildToken(sid string) string {
 
 // 更新用户信息
 func updateLoginInfo(memberInfo *User) map[string]interface{} {
-	sid := SessionId()
+	sid := Session.New()
 	token := buildToken(sid)
 
 	// 删除前者登录数据
