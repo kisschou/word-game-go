@@ -1,0 +1,8 @@
+time="2020-04-10T08:07:32Z" level=info msg="| 310 |      538.26µs | 192.168.110.134 | POST | /api/uauth |"
+time="2020-04-10T08:07:35Z" level=info msg="| 310 |      21.723µs | 192.168.110.134 | POST | /api/login |"
+time="2020-04-10T08:07:53Z" level=info msg="| 310 |     346.637µs | 192.168.110.134 | POST | /api/uauth |"
+time="2020-04-10T08:08:44Z" level=info msg="| 310 |     348.891µs | 192.168.110.134 | POST | /api/uauth |"
+time="2020-04-10T08:09:15Z" level=info msg="| 310 |     330.325µs | 192.168.110.134 | POST | /api/uauth |"
+time="2020-04-10T08:11:10Z" level=info msg="| 200 |     406.628µs | 192.168.110.134 | POST | /api/uauth |"
+time="2020-04-10T08:23:50Z" level=info msg="| 200 |     385.042µs | 192.168.110.134 | POST | /api/uauth |"
+time="2020-04-10T08:24:24Z" level=info msg="| 310 |     678.317µs | 192.168.110.134 | POST | /api/uauth |"

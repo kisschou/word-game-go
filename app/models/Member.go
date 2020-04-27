@@ -7,14 +7,16 @@ import (
 	"strconv"
 	_ "strings"
 	"time"
-	. "wordgame/library/cache"
-	. "wordgame/library/database"
-	. "wordgame/library/encrypt"
-	. "wordgame/library/unit"
 
 	"github.com/golang/protobuf/proto"
 	"wordgame/data/rpc/golang/api"
 	"wordgame/data/rpc/golang/base"
+
+	. "wordgame/library/cache/redis"
+	"wordgame/library/config"
+	. "wordgame/library/database"
+	. "wordgame/library/encrypt"
+	. "wordgame/library/unit"
 )
 
 type User struct {
@@ -133,7 +135,8 @@ func buildProto(memberInfoMap map[string]interface{}) (mData []byte, err error) 
 }
 
 func buildToken(sid string) string {
-	sid += "sot31OWgWOFpUXA0gKQ6aIi3Y5iQ9LiRS8sKGWlVdJx9ca93SgOuSGGf3ygEYqPB"
+	c := config.Config{}
+	sid += c.Get("auth_access").(string)
 	sid += strconv.FormatInt(time.Now().Unix(), 10)
 	rand.Seed(time.Now().UnixNano())
 	sid += strconv.Itoa(rand.Intn(9999))
