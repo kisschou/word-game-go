@@ -11,6 +11,11 @@ type Member struct {
 }
 
 func (member *Member) Login() {
+	fmt.Println("Login!")
+	member.SayHi()
+}
+
+func (member *Member) Hello() {
 	fmt.Println("Hello World!")
 	member.SayHi()
 }

@@ -1,78 +1,87 @@
 package core
 
 import (
+	"github.com/julienschmidt/httprouter"
+
 	"net/http"
 	"path"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 type (
-	// Handlerfunc.
-	HandlerFunc func(*Context)
+	// HandlerFunc .
+	HandlerFunc func()
 
-	// Context.
+	// Context .
 	Context struct {
 		Req     *http.Request
 		Writer  http.ResponseWriter
 		Params  httprouter.Params
-		Handler HandlerFunc
-		Engine  *HttpEngine
+		handler HandlerFunc
+		engine  *HttpEngine
 	}
 
-	// RouterGroup.
+	// RouterGroup .
 	RouterGroup struct {
 		Handler HandlerFunc
-		Prefix  string
-		Parent  *RouterGroup
-		Engine  *HttpEngine
+		prefix  string
+		parent  *RouterGroup
+		engine  *HttpEngine
 	}
 
-	// HttpEngine.
+	// HttpEngine .
 	HttpEngine struct {
 		*RouterGroup
-		Router *httprouter.Router
+		router *httprouter.Router
 	}
 )
 
-func New() *HttpEngine {
+// New HttpEngine
+func NewEngine() *HttpEngine {
 	engine := &HttpEngine{}
 	engine.RouterGroup = &RouterGroup{nil, "", nil, engine}
-	engine.Router = httprouter.New()
+	engine.router = httprouter.New()
 	return engine
 }
 
+// ServeHTTP makes the router implement the http.Handler interface.
 func (engine *HttpEngine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	engine.Router.ServeHTTP(w, req)
+	engine.router.ServeHTTP(w, req)
 }
 
+// Run .
 func (engine *HttpEngine) Run(addr string) {
 	http.ListenAndServe(addr, engine)
 }
 
+/************************************/
+/********** ROUTES GROUPING *********/
+/************************************/
+
 func (group *RouterGroup) createContext(w http.ResponseWriter, req *http.Request, params httprouter.Params, handler HandlerFunc) *Context {
-	return *Context{
+	return &Context{
 		Writer:  w,
 		Req:     req,
-		Engine:  group.Engine,
+		engine:  group.engine,
 		Params:  params,
-		Handler: handler,
+		handler: handler,
 	}
 }
 
+// Group .
 func (group *RouterGroup) Group(component string) *RouterGroup {
-	prefix := path.Join(group.Prefix, component)
+	prefix := path.Join(group.prefix, component)
 	return &RouterGroup{
 		Handler: nil,
-		Parent:  group,
-		Prefix:  prefix,
-		Engine:  group.Engine,
+		parent:  group,
+		prefix:  prefix,
+		engine:  group.engine,
 	}
 }
 
+// Handle .
 func (group *RouterGroup) Handle(method, p string, handler HandlerFunc) {
-	p = path.Join(group.Prefix, p)
-	group.Engine.Router.Handle(method, p, func(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
+	p = path.Join(group.prefix, p)
+	group.engine.router.Handle(method, p, func(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
 		group.createContext(w, req, params, handler).Next()
 	})
 }
@@ -104,7 +113,10 @@ func (group *RouterGroup) PUT(path string, handler HandlerFunc) {
 
 // Next .
 func (c *Context) Next() {
-	c.Handler(c)
+	var r Request
+	r.Recv(c)
+	handlerFunc := c.handler
+	handlerFunc()
 }
 
 // Writes the given string into the response body and sets the Content-Type to "text/plain"
