@@ -5,6 +5,7 @@ import (
 
 	"net/http"
 	"path"
+	"strings"
 )
 
 type (
@@ -58,6 +59,16 @@ func (engine *HttpEngine) Run(addr string) {
 /************************************/
 
 func (group *RouterGroup) createContext(w http.ResponseWriter, req *http.Request, params httprouter.Params, handler HandlerFunc) *Context {
+	if _, ok := req.Header["Content-Type"]; ok {
+		if strings.Contains(req.Header["Content-Type"][0], "x-www-form-urlencoded") {
+			req.ParseForm()
+		}
+
+		if strings.Contains(req.Header["Content-Type"][0], "form-data") {
+			req.ParseMultipartForm(32 << 20)
+		}
+	}
+
 	return &Context{
 		Writer:  w,
 		Req:     req,
@@ -111,10 +122,15 @@ func (group *RouterGroup) PUT(path string, handler HandlerFunc) {
 	group.Handle("PUT", path, handler)
 }
 
+// OPTIONS
+func (group *RouterGroup) OPTIONS(path string, handler HandlerFunc) {
+	group.Handle("OPTIONS", path, handler)
+}
+
 // Next .
 func (c *Context) Next() {
-	var r Request
-	r.Recv(c)
+	var req Request
+	req.Recv(c)
 	handlerFunc := c.handler
 	handlerFunc()
 }

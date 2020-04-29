@@ -12,6 +12,7 @@ func main() {
 	{
 		var member controller.Member
 		v1.GET("/login", member.Login)
+		v1.POST("/login", member.Login)
 		v1.GET("/hello", member.Hello)
 	}
 
