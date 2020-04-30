@@ -12,10 +12,10 @@
 ##### 单路由
 ```
     // 初始化路由引擎
-	r := core.NewEngine()
+    r := core.NewEngine()
 
     // 初始化指向包
-	var member controller.Member
+    var member controller.Member
 
     // 设置POST路由
     r.POST("/hello", member.Login, &member.Base)
@@ -28,24 +28,24 @@
 ##### 路由组
 ```
     // 初始化路由引擎
-	r := core.NewEngine()
+    r := core.NewEngine()
 
     // 初始化指向包
-	var member controller.Member
+    var member controller.Member
 
     // 设置路由组
-	memberRouter := r.Group("/member", &member.Base)
-	{
-		memberRouter.GET("/login", member.Login)
-		memberRouter.POST("/login", member.Login)
-		memberRouter.GET("/hello", member.Hello)
-	}
+    memberRouter := r.Group("/member", &member.Base)
+    {
+    	memberRouter.GET("/login", member.Login)
+	memberRouter.POST("/login", member.Login)
+	memberRouter.GET("/hello", member.Hello)
+    }
 
     // 说明
-	memberRouter := r.Group(组访问路径, 基础控制器)
-	{
-		memberRouter.GET(子访问路径, 触发方法 ...{, 基础控制器})
-	}
+    memberRouter := r.Group(组访问路径, 基础控制器)
+    {
+	memberRouter.GET(子访问路径, 触发方法 ...{, 基础控制器})
+    }
 ```
 || 注意:
 || 1. 在路由组配置中，组配置中的基础控制器必填，而子路由中的选填写。
