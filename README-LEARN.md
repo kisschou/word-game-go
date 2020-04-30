@@ -14,6 +14,7 @@
 11. [flag](https://golang.org/pkg/flag/) - 用于解析命令行选项 [相关文档](https://juejin.im/post/5e1b33da51882536a627f17b)
 12. [zerolog](https://github.com/rs/zerolog/log) - 专注于记录 JSON 格式的日志，号称 0 内存分配 [相关文档](https://juejin.im/post/5ea451226fb9a03c947cebc2)
 13. [go-app](https://github.com/maxence-charriere/go-app/v6) - 是一个使用 Go + WebAssembly 技术编写渐进式 Web 应用的库 [相关文档](https://juejin.im/post/5ea1ac82f265da47b55508b7?utm_source=gold_browser_extension)
+14. [nutsdb](https://github.com/xujiajun/nutsdb) - 一个完全由 Go 编写的简单、快速、可嵌入的持久化存储。支持List、Set、Sorted Set这些数据结构。 [相关文档](https://juejin.im/post/5ea6fcff5188256d9f094e34)
 
 #### Docs
 0. [优秀的开源项目](https://juejin.im/entry/5c00e5fce51d4550c76d9097)
@@ -58,3 +59,4 @@
 39. [仿Gin搭建自己的web框架.5](https://juejin.im/post/5c9ae24ef265da60fd0c23b4)
 40. [仿Gin搭建自己的web框架.6](https://juejin.im/post/5c9ae286f265da60d0004dc3)
 41. [仿Gin搭建自己的web框架.7](https://juejin.im/post/5c9ae2c5f265da60ee12ef38)
+42. [Go 语言数据类型：指针](https://juejin.im/post/5ea8c7e1f265da7bd802a4a1)
