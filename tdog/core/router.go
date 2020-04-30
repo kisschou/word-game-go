@@ -1,11 +1,13 @@
 package core
 
 import (
-	"github.com/julienschmidt/httprouter"
-
 	"net/http"
 	"path"
 	"strings"
+
+	"github.com/julienschmidt/httprouter"
+
+	"wordgame/tdog/lib"
 )
 
 type (
@@ -52,8 +54,9 @@ func (engine *HttpEngine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // Run .
-func (engine *HttpEngine) Run(addr string) {
-	http.ListenAndServe(addr, engine)
+func (engine *HttpEngine) Run() {
+	var c lib.Config
+	http.ListenAndServe(c.Get("app_port").(string), engine)
 }
 
 /************************************/
