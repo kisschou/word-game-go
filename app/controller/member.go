@@ -7,15 +7,16 @@ import (
 )
 
 type Member struct {
-	core.Controller
+	Base core.Controller
 }
 
 func (member *Member) Login() {
+	fmt.Println(member.Base, "\r\n")
 	fmt.Println("Login!")
-	member.SayHi()
+	member.Base.SayHi()
 }
 
 func (member *Member) Hello() {
 	fmt.Println("Hello World!")
-	member.SayHi()
+	member.Base.SayHi()
 }

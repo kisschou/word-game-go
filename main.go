@@ -8,12 +8,12 @@ import (
 func main() {
 	r := core.NewEngine()
 
-	v1 := r.Group("/v1")
+	var member controller.Member
+	memberRouter := r.Group("/member", &member.Base)
 	{
-		var member controller.Member
-		v1.GET("/login", member.Login)
-		v1.POST("/login", member.Login)
-		v1.GET("/hello", member.Hello)
+		memberRouter.GET("/login", member.Login)
+		memberRouter.POST("/login", member.Login)
+		memberRouter.GET("/hello", member.Hello)
 	}
 
 	r.Run(":8000")

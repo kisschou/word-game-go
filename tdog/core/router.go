@@ -14,19 +14,21 @@ type (
 
 	// Context .
 	Context struct {
-		Req     *http.Request
-		Writer  http.ResponseWriter
-		Params  httprouter.Params
-		handler HandlerFunc
-		engine  *HttpEngine
+		Req            *http.Request
+		Writer         http.ResponseWriter
+		Params         httprouter.Params
+		handler        HandlerFunc
+		engine         *HttpEngine
+		BaseController *Controller
 	}
 
 	// RouterGroup .
 	RouterGroup struct {
-		Handler HandlerFunc
-		prefix  string
-		parent  *RouterGroup
-		engine  *HttpEngine
+		Handler        HandlerFunc
+		prefix         string
+		parent         *RouterGroup
+		engine         *HttpEngine
+		BaseController *Controller
 	}
 
 	// HttpEngine .
@@ -39,7 +41,7 @@ type (
 // New HttpEngine
 func NewEngine() *HttpEngine {
 	engine := &HttpEngine{}
-	engine.RouterGroup = &RouterGroup{nil, "", nil, engine}
+	engine.RouterGroup = &RouterGroup{nil, "", nil, engine, nil}
 	engine.router = httprouter.New()
 	return engine
 }
@@ -70,22 +72,24 @@ func (group *RouterGroup) createContext(w http.ResponseWriter, req *http.Request
 	}
 
 	return &Context{
-		Writer:  w,
-		Req:     req,
-		engine:  group.engine,
-		Params:  params,
-		handler: handler,
+		Writer:         w,
+		Req:            req,
+		engine:         group.engine,
+		Params:         params,
+		handler:        handler,
+		BaseController: group.BaseController,
 	}
 }
 
 // Group .
-func (group *RouterGroup) Group(component string) *RouterGroup {
+func (group *RouterGroup) Group(component string, baseController *Controller) *RouterGroup {
 	prefix := path.Join(group.prefix, component)
 	return &RouterGroup{
-		Handler: nil,
-		parent:  group,
-		prefix:  prefix,
-		engine:  group.engine,
+		Handler:        nil,
+		parent:         group,
+		prefix:         prefix,
+		engine:         group.engine,
+		BaseController: baseController,
 	}
 }
 
@@ -131,8 +135,7 @@ func (group *RouterGroup) OPTIONS(path string, handler HandlerFunc) {
 func (c *Context) Next() {
 	var req Request
 	req.Recv(c)
-	handlerFunc := c.handler
-	handlerFunc()
+	c.handler()
 }
 
 // Writes the given string into the response body and sets the Content-Type to "text/plain"
