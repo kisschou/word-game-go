@@ -11,8 +11,9 @@ type Member struct {
 }
 
 func (member *Member) Login() {
-	fmt.Println(member.Base, "\r\n")
-	fmt.Println("Login!")
+	username := member.Base.Req.Params["username"][0]
+	password := member.Base.Req.Params["password"][0]
+	fmt.Println("Login with username: [" + username + "] password: [" + password + "]")
 	member.Base.SayHi()
 }
 

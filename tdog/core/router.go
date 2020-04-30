@@ -56,7 +56,7 @@ func (engine *HttpEngine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 // Run .
 func (engine *HttpEngine) Run() {
 	var c lib.Config
-	http.ListenAndServe(c.Get("app_port").(string), engine)
+	http.ListenAndServe(":"+c.Get("app_port").(string), engine)
 }
 
 /************************************/
@@ -105,32 +105,50 @@ func (group *RouterGroup) Handle(method, p string, handler HandlerFunc) {
 }
 
 // POST is a shortcut for router.Handle("POST", path, handle)
-func (group *RouterGroup) POST(path string, handler HandlerFunc) {
+func (group *RouterGroup) POST(path string, handler HandlerFunc, baseController ...*Controller) {
+	if baseController != nil {
+		group.BaseController = baseController[0]
+	}
 	group.Handle("POST", path, handler)
 }
 
 // GET is a shortcut for router.Handle("GET", path, handle)
-func (group *RouterGroup) GET(path string, handler HandlerFunc) {
+func (group *RouterGroup) GET(path string, handler HandlerFunc, baseController ...*Controller) {
+	if baseController != nil {
+		group.BaseController = baseController[0]
+	}
 	group.Handle("GET", path, handler)
 }
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handle)
-func (group *RouterGroup) DELETE(path string, handler HandlerFunc) {
+func (group *RouterGroup) DELETE(path string, handler HandlerFunc, baseController ...*Controller) {
+	if baseController != nil {
+		group.BaseController = baseController[0]
+	}
 	group.Handle("DELETE", path, handler)
 }
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handle)
-func (group *RouterGroup) PATCH(path string, handler HandlerFunc) {
+func (group *RouterGroup) PATCH(path string, handler HandlerFunc, baseController ...*Controller) {
+	if baseController != nil {
+		group.BaseController = baseController[0]
+	}
 	group.Handle("PATCH", path, handler)
 }
 
 // PUT is a shortcut for router.Handle("PUT", path, handle)
-func (group *RouterGroup) PUT(path string, handler HandlerFunc) {
+func (group *RouterGroup) PUT(path string, handler HandlerFunc, baseController ...*Controller) {
+	if baseController != nil {
+		group.BaseController = baseController[0]
+	}
 	group.Handle("PUT", path, handler)
 }
 
 // OPTIONS
-func (group *RouterGroup) OPTIONS(path string, handler HandlerFunc) {
+func (group *RouterGroup) OPTIONS(path string, handler HandlerFunc, baseController ...*Controller) {
+	if baseController != nil {
+		group.BaseController = baseController[0]
+	}
 	group.Handle("OPTIONS", path, handler)
 }
 
