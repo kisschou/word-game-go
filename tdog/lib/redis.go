@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"os"
+
 	RedisModel "github.com/go-redis/redis/v7"
 )
 
@@ -11,9 +13,9 @@ var RedisEngine *RedisModel.Client
 
 func init() {
 	var conf Config
-	host := conf.Get("redis.master.host").(string)
-	port := conf.Get("redis.master.port").(string)
-	pass := conf.Get("redis.master.pass").(string)
+	host := conf.Get("cache.master.host").(string)
+	port := conf.Get("cache.master.port").(string)
+	pass := conf.Get("cache.master.pass").(string)
 
 	RedisEngine = RedisModel.NewClient(&RedisModel.Options{
 		Addr:     host + ":" + port,
@@ -29,6 +31,6 @@ func init() {
 	}
 }
 
-func (redis *Redis) Select(index) {
+func (redis *Redis) Select(index int) {
 	RedisEngine = RedisModel.NewClient(&RedisModel.Options{DB: index})
 }

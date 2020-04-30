@@ -8,22 +8,18 @@ import (
 )
 
 type Config struct {
-	Path string
 	File string
-	Key  string
 }
 
 func connect(c *Config) (err error) {
 	path, _ := os.Getwd()
 	path += "/config"
 	file := "app"
-
-	if len(c.Path) > 0 {
-		path = c.Path
-	}
-
-	if len(c.File) > 0 {
+	if c != nil {
 		file = c.File
+	}
+	if len(file) < 1 {
+		file = "app"
 	}
 
 	viper.SetConfigName(file)
@@ -33,24 +29,17 @@ func connect(c *Config) (err error) {
 	return
 }
 
-func (c *Config) Get(keys ...string) (value interface{}) {
+func (c *Config) Get(key string) (value interface{}) {
 	err := connect(c)
-	key := ""
 	if err != nil {
 		logger := Logger{Level: 0, Key: "error"}
 		logger.New(err.Error())
 		return nil
 	}
 
-	if (len(c.Key) < 1) && len(keys) != 1 {
+	if len(key) < 1 {
 		value = ""
 		return
-	}
-
-	if len(c.Key) > 0 {
-		key = c.Key
-	} else {
-		key = keys[0]
 	}
 
 	value = viper.Get(key)

@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"os"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 	"xorm.io/core"
@@ -14,14 +16,17 @@ var SqlEngine *xorm.Engine
 func init() {
 	var err error
 
-	conf := config.Config{}
+	var conf *Config
 	mysqlUser := conf.Get("database.master.user").(string)
 	mysqlPass := conf.Get("database.master.pass").(string)
 	mysqlHost := conf.Get("database.master.host").(string)
 	mysqlPort := conf.Get("database.master.port").(string)
 	mysqlDb := conf.Get("database.master.db").(string)
 	mysqlCharset := conf.Get("database.master.charset").(string)
-	mysqlPrefix := conf.Get("database.master.prefix").(string)
+	mysqlPrefix := ""
+	if conf.Get("database.master.prefix") != nil {
+		mysqlPrefix = conf.Get("database.master.prefix").(string)
+	}
 
 	dsn := mysqlUser + ":" + mysqlPass + "@tcp(" + mysqlHost + ":" + mysqlPort + ")/" + mysqlDb + "?charset=" + mysqlCharset + "&parseTime=True&loc=Local&timeout=10ms"
 	SqlEngine, err = xorm.NewEngine("mysql", dsn)

@@ -10,7 +10,7 @@ type Util struct {
 func (u *Util) FileExists(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
-		if os.IsExists(err) {
+		if os.IsExist(err) {
 			return true
 		}
 		return false
