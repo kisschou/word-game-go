@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
-
-	"wordgame/tdog/lib"
 )
 
 type (
@@ -55,8 +53,7 @@ func (engine *HttpEngine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 // Run .
 func (engine *HttpEngine) Run() {
-	var c lib.Config
-	http.ListenAndServe(":"+c.Get("app_port").(string), engine)
+	http.ListenAndServe(":8000", engine)
 }
 
 /************************************/
@@ -106,7 +103,7 @@ func (group *RouterGroup) Handle(method, p string, handler HandlerFunc) {
 
 // POST is a shortcut for router.Handle("POST", path, handle)
 func (group *RouterGroup) POST(path string, handler HandlerFunc, baseController ...*Controller) {
-	if baseController != nil {
+	if len(baseController) > 0 {
 		group.BaseController = baseController[0]
 	}
 	group.Handle("POST", path, handler)
@@ -114,7 +111,7 @@ func (group *RouterGroup) POST(path string, handler HandlerFunc, baseController 
 
 // GET is a shortcut for router.Handle("GET", path, handle)
 func (group *RouterGroup) GET(path string, handler HandlerFunc, baseController ...*Controller) {
-	if baseController != nil {
+	if len(baseController) > 0 {
 		group.BaseController = baseController[0]
 	}
 	group.Handle("GET", path, handler)
@@ -122,7 +119,7 @@ func (group *RouterGroup) GET(path string, handler HandlerFunc, baseController .
 
 // DELETE is a shortcut for router.Handle("DELETE", path, handle)
 func (group *RouterGroup) DELETE(path string, handler HandlerFunc, baseController ...*Controller) {
-	if baseController != nil {
+	if len(baseController) > 0 {
 		group.BaseController = baseController[0]
 	}
 	group.Handle("DELETE", path, handler)
@@ -130,7 +127,7 @@ func (group *RouterGroup) DELETE(path string, handler HandlerFunc, baseControlle
 
 // PATCH is a shortcut for router.Handle("PATCH", path, handle)
 func (group *RouterGroup) PATCH(path string, handler HandlerFunc, baseController ...*Controller) {
-	if baseController != nil {
+	if len(baseController) > 0 {
 		group.BaseController = baseController[0]
 	}
 	group.Handle("PATCH", path, handler)
@@ -138,7 +135,7 @@ func (group *RouterGroup) PATCH(path string, handler HandlerFunc, baseController
 
 // PUT is a shortcut for router.Handle("PUT", path, handle)
 func (group *RouterGroup) PUT(path string, handler HandlerFunc, baseController ...*Controller) {
-	if baseController != nil {
+	if len(baseController) > 0 {
 		group.BaseController = baseController[0]
 	}
 	group.Handle("PUT", path, handler)
@@ -146,7 +143,7 @@ func (group *RouterGroup) PUT(path string, handler HandlerFunc, baseController .
 
 // OPTIONS
 func (group *RouterGroup) OPTIONS(path string, handler HandlerFunc, baseController ...*Controller) {
-	if baseController != nil {
+	if len(baseController) > 0 {
 		group.BaseController = baseController[0]
 	}
 	group.Handle("OPTIONS", path, handler)
