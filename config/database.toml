@@ -1,4 +1,17 @@
+master_slave = true
+slave_list = ["slave"]
+debug = true
+
 [master]
+host = "127.0.0.1"
+port = "3306"
+user = "root"
+pass = "root"
+db = "biushop"
+charset = "utf8mb4"
+prefix = ""
+
+[slave]
 host = "127.0.0.1"
 port = "3306"
 user = "root"
