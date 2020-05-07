@@ -62,7 +62,7 @@ func action(sourceKey string) (file string, key string) {
 	file = conf.File
 	key = sourceKey
 
-	if !viper.InConfig(key) {
+	if !viper.IsSet(key) {
 		newConf := new(Config)
 		match := strings.Split(key, ".")
 		if len(match) > 1 {
@@ -72,7 +72,7 @@ func action(sourceKey string) (file string, key string) {
 		}
 		beginConn(newConf)
 		key = strings.Join(match, ".")
-		if !viper.InConfig(key) {
+		if !viper.IsSet(key) {
 			file = ""
 			key = ""
 		}
