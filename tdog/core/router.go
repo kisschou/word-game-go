@@ -12,10 +12,17 @@ type (
 	// HandlerFunc .
 	HandlerFunc func()
 
+	// ErrorMsg
+	ErrorMsg struct {
+		Message string      `json:"msg"`
+		Meta    interface{} `json:"meta"`
+	}
+
 	// Context .
 	Context struct {
 		Req            *http.Request
 		Writer         http.ResponseWriter
+		Errors         []ErrorMsg
 		Params         httprouter.Params
 		handler        HandlerFunc
 		engine         *HttpEngine
@@ -151,14 +158,25 @@ func (group *RouterGroup) OPTIONS(path string, handler HandlerFunc, baseControll
 
 // Next .
 func (c *Context) Next() {
-	var req Request
-	req.Recv(c)
+	req := new(Request)
+	req.New(c)
+	res := new(Response)
+	res.New(c)
 	c.handler()
 }
 
-// Writes the given string into the response body and sets the Content-Type to "text/plain"
-func (c *Context) String(code int, msg string) {
-	c.Writer.Header().Set("Content-Type", "text/plain")
+func (c *Context) Abort(code int) {
 	c.Writer.WriteHeader(code)
-	c.Writer.Write([]byte(msg))
+}
+
+func (c *Context) Fail(code int, err error) {
+	c.Error(err, "Operation aborted")
+	c.Abort(code)
+}
+
+func (c *Context) Error(err error, meta interface{}) {
+	c.Errors = append(c.Errors, ErrorMsg{
+		Message: err.Error(),
+		Meta:    meta,
+	})
 }

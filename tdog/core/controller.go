@@ -4,10 +4,15 @@ import (
 	"fmt"
 )
 
-type Controller struct {
-	Req  *Request
-	Name string
-}
+type (
+	H map[string]interface{}
+
+	Controller struct {
+		Req  *Request
+		Res  *Response
+		Name string
+	}
+)
 
 func (c *Controller) SayHi() {
 	fmt.Println("You extends core/controller!", c.Name)

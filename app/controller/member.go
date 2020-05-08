@@ -15,9 +15,13 @@ func (member *Member) Login() {
 	password := member.Base.Req.Params["password"][0]
 	fmt.Println("Login with username: [" + username + "] password: [" + password + "]")
 	member.Base.SayHi()
+	member.Base.Res.JSON(200, core.H{
+		"message": "login success",
+	})
 }
 
-func (member *Member) Hello() {
+func (member *Member) Ping() {
 	fmt.Println("Hello World!")
 	member.Base.SayHi()
+	member.Base.Res.String(200, "Pong")
 }
