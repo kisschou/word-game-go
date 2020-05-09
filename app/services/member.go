@@ -1,10 +1,10 @@
-package service
+package services
 
 import (
 	"fmt"
 	"time"
 
-	"wordgame/app/model"
+	"wordgame/app/models"
 	"wordgame/tdog/core"
 )
 
@@ -17,7 +17,7 @@ type (
 )
 
 func (member *Member) Login(username string, password string) {
-	MemberModel := new(model.Member)
+	MemberModel := new(models.Member)
 	MemberModel.Login(username, password)
 }
 

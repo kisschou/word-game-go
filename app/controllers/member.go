@@ -1,9 +1,9 @@
-package controller
+package controllers
 
 import (
 	"fmt"
 
-	"wordgame/app/service"
+	"wordgame/app/services"
 	"wordgame/tdog/core"
 )
 
@@ -16,7 +16,7 @@ func (member *Member) Login() {
 	password := member.Base.Req.Params["password"][0]
 	fmt.Println("Login with username: [" + username + "] password: [" + password + "]")
 
-	MemberService := new(service.Member)
+	MemberService := new(services.Member)
 	MemberService.Login(username, password)
 	member.Base.SayHi()
 	member.Base.Res.JSON(200, core.H{

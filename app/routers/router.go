@@ -1,14 +1,14 @@
 package routers
 
 import (
-	"wordgame/app/controller"
+	"wordgame/app/controllers"
 	"wordgame/tdog/core"
 )
 
 func InitRouter() *core.HttpEngine {
 	r := core.NewEngine()
 
-	var member controller.Member
+	var member controllers.Member
 	r.GET("/ping", member.Ping, &member.Base)
 	r.POST("/ping", member.Ping, &member.Base)
 
