@@ -16,9 +16,13 @@ type (
 	}
 )
 
-func (member *Member) Login(username string, password string) {
-	MemberModel := new(models.Member)
-	MemberModel.Login(username, password)
+func (member *Member) Login(username string, password string) (memberInfo MemberInfo, err error) {
+	UserModel := new(models.UserModel)
+	userId, err := UserModel.Login(username, password)
+	if err != nil {
+		return
+	}
+	return
 }
 
 func (member *Member) GetInfo(userId string) {
