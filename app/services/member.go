@@ -22,11 +22,14 @@ func (member *Member) Login(username string, password string) (memberInfo Member
 	if err != nil {
 		return
 	}
+	member.GetInfo(userId)
 	return
 }
 
-func (member *Member) GetInfo(userId string) {
+func (member *Member) GetInfo(userId int64) {
 	member.Base.Redis.NewEngine()
-	member.Base.Redis.Engine.SetNX("member:uid:1", "Hello World!!!", time.Duration(0)*time.Second)
-	fmt.Println(member.Base.Redis.Engine.Get("member:info:" + userId))
+	key := fmt.Sprintf("member:info:%x", userId)
+	fmt.Println(key)
+	member.Base.Redis.Engine.SetNX(key, "Hello World!!!", time.Duration(0)*time.Second)
+	fmt.Println(member.Base.Redis.Engine.Get(key))
 }
