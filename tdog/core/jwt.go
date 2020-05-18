@@ -1,6 +1,8 @@
 package core
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"wordgame/tdog/lib"
@@ -35,6 +37,11 @@ func (jwt *Jwt) New(data JwtPayload) {
 	payload["data"] = data
 	payload["ita"] = time.Now().Unix()
 	payload["exp"] = 7200
+
+	crypt := new(lib.Crypt)
+	jsonData, _ := json.Marshal(payload)
+	crypt.Str = string(jsonData)
+	fmt.Println(crypt.Base64Encode())
 }
 
 func (jwt *Jwt) Get(data string) {
