@@ -17,8 +17,8 @@ func buildFilePath(logger *Logger) (filePath string) {
 	var util *Util
 	levelMap := map[int]string{0: "logs", 1: "runtime"}
 	filePath, _ = os.Getwd()
-	hash := Hash{Str: logger.Key}
-	filePath += "/" + levelMap[logger.Level] + "/" + hash.Md5() + "/"
+	crypt := Crypt{Str: logger.Key}
+	filePath += "/" + levelMap[logger.Level] + "/" + crypt.Md5() + "/"
 	if logger.Level == 0 {
 		filePath += time.Now().Format("2006-01-02") + "/" //  2006-01-02 15:04:05
 	}
@@ -27,8 +27,8 @@ func buildFilePath(logger *Logger) (filePath string) {
 }
 
 func buildFileName(logger *Logger) (fileName string) {
-	hash := Hash{Str: logger.Key}
-	fileName = hash.Sha1() + ".log"
+	crypt := Crypt{Str: logger.Key}
+	fileName = crypt.Sha1() + ".log"
 	return
 }
 
