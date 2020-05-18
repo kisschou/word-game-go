@@ -32,11 +32,19 @@ type (
 func (userModel *UserModel) Login(username string, password string) (userId int64, err error) {
 	userInfo := new(User)
 	userModel.Base.Sql.NewEngine()
-	result, _ := userModel.Base.Sql.Engine.Where("username=?", username).Get(userInfo)
+	result, err := userModel.Base.Sql.Engine.Where("username=?", username).Get(userInfo)
 	if !result {
 		err = errors.New("用户不存在或者已经锁定!")
 		return
 	}
+	if password != userInfo.Password {
+		err = errors.New("密码错误!")
+		return
+	}
 	userId = userInfo.Id
+	userModel.GetInfo(userInfo.Id)
 	return
+}
+
+func (userModel *UserModel) GetInfo(userId int64) {
 }

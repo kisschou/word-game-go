@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
 
 	"wordgame/app/services"
 	"wordgame/tdog/core"
@@ -17,15 +18,24 @@ func (member *Member) Login() {
 	fmt.Println("Login with username: [" + username + "] password: [" + password + "]")
 
 	MemberService := new(services.Member)
-	MemberService.Login(username, password)
-	member.Base.SayHi()
-	member.Base.Res.JSON(200, core.H{
+
+	memberInfo, err := MemberService.Login(username, password)
+	if err != nil {
+		member.Base.Res.JSON(http.StatusInternalServerError, core.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	fmt.Println("LoginMemberInfo: ", memberInfo)
+	member.Base.Res.JSON(http.StatusOK, core.H{
 		"message": "login success",
 	})
 }
 
+func (member *Member) GetInfo() {
+}
+
 func (member *Member) Ping() {
-	fmt.Println("Hello World!")
-	member.Base.SayHi()
-	member.Base.Res.String(200, "Pong")
+	member.Base.Res.String(http.StatusOK, "Pong")
 }

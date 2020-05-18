@@ -29,7 +29,10 @@ func (member *Member) Login(username string, password string) (memberInfo Member
 func (member *Member) GetInfo(userId int64) {
 	member.Base.Redis.NewEngine()
 	key := fmt.Sprintf("member:info:%x", userId)
-	fmt.Println(key)
+	if member.Base.Redis.Engine.Exists(key).Val() > 0 {
+		fmt.Println("Found ================> ", key, "[", member.Base.Redis.Engine.Get(key), "]")
+		return
+	}
 	member.Base.Redis.Engine.SetNX(key, "Hello World!!!", time.Duration(0)*time.Second)
 	fmt.Println(member.Base.Redis.Engine.Get(key))
 }
