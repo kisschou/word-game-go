@@ -3,7 +3,9 @@ package lib
 import (
 	ParentMd5 "crypto/md5"
 	ParentSha1 "crypto/sha1"
+	ParentSha256 "crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 )
 
@@ -17,6 +19,13 @@ func (h *Crypt) Md5() string {
 
 func (h *Crypt) Sha1() string {
 	return fmt.Sprintf("%x", ParentSha1.Sum([]byte(h.Str)))
+}
+
+func (h *Crypt) Sha256() string {
+	hash := ParentSha256.New()
+	hash.Write([]byte(h.Str))
+	sum := hash.Sum(nil)
+	return hex.EncodeToString(sum)
 }
 
 func (h *Crypt) Base64Encode() string {
