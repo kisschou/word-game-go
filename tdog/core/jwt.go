@@ -74,6 +74,11 @@ func (jwt *Jwt) New(data JwtPayload) string {
 	crypt.Str = string(jsonData) + conf.Get("hex_key").String()
 	jwt.signature = crypt.Sha256()
 
+	// save to redis
+	redis := new(lib.Redis)
+	redis.NewEngine()
+	redis.Engine.SetNX("jwt:"+jwt.header+"."+jwt.payload+"."+jwt.signature, 1, time.Duration(7200)*time.Second)
+
 	return jwt.header + "." + jwt.payload + "." + jwt.signature
 }
 
