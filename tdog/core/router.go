@@ -162,6 +162,23 @@ func (c *Context) Next() {
 	req.New(c)
 	res := new(Response)
 	res.New(c)
+
+	// 验签
+	isAuth := true
+	if isAuth {
+		jwt := new(Jwt)
+		authorization := ""
+		if len(c.BaseController.Req.Header["Authorization"]) > 0 {
+			authorization = c.BaseController.Req.Header["Authorization"][0]
+		}
+		if len(authorization) < 1 || !jwt.Check(authorization) {
+			c.BaseController.Res.JSON(http.StatusUnauthorized, map[string]interface{}{
+				"message": "Unauthorized",
+			})
+			return
+		}
+	}
+
 	c.handler()
 }
 
