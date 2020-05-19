@@ -15,8 +15,15 @@ type Member struct {
 func (member *Member) Login() {
 	username := member.Base.Req.Params["username"][0]
 	password := member.Base.Req.Params["password"][0]
-	fmt.Println("Login with username: [" + username + "] password: [" + password + "]")
 
+	jwt := new(core.Jwt)
+	data := make(map[string]interface{})
+	data["username"] = username
+	data["password"] = password
+	jwtData := jwt.New(data)
+	fmt.Println(jwtData)
+
+	fmt.Println("Login with username: [" + username + "] password: [" + password + "]")
 	MemberService := new(services.Member)
 
 	memberInfo, err := MemberService.Login(username, password)
