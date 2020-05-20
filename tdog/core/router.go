@@ -163,13 +163,28 @@ func (c *Context) Next() {
 	res := new(Response)
 	res.New(c)
 
-	// 验签
+	/**
+	 * 验签
+	 * 用户请求接口时候自动判断执行验签
+	 **/
+	// 跳过验签路由列表
+	ignoreRouter := []string{
+		"/member/login",
+		"/auth/getToken",
+	}
 	isAuth := true
+	for _, v := range ignoreRouter {
+		if v == c.Req.RequestURI {
+			isAuth = false
+		}
+	}
 	if isAuth {
 		jwt := new(Jwt)
 		authorization := ""
-		if len(c.BaseController.Req.Header["Authorization"]) > 0 {
-			authorization = c.BaseController.Req.Header["Authorization"][0]
+		if _, ok := c.BaseController.Req.Header["Authorization"]; ok {
+			if len(c.BaseController.Req.Header["Authorization"]) > 0 {
+				authorization = c.BaseController.Req.Header["Authorization"][0]
+			}
 		}
 		if len(authorization) < 1 || !jwt.Check(authorization) {
 			c.BaseController.Res.JSON(http.StatusUnauthorized, map[string]interface{}{
@@ -177,6 +192,16 @@ func (c *Context) Next() {
 			})
 			return
 		}
+
+		// 验签通过获取用户open_id
+		openId := jwt.Get(authorization, "open_id").(string)
+		if len(openId) < 1 {
+			c.BaseController.Res.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"message": "用户未登录",
+			})
+			return
+		}
+		c.BaseController.OpenId = openId
 	}
 
 	c.handler()
