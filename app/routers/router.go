@@ -8,15 +8,21 @@ import (
 func InitRouter() *core.HttpEngine {
 	r := core.NewEngine()
 
-	var member controllers.Member
-	r.GET("/ping", member.Ping, &member.Base)
-	r.POST("/ping", member.Ping, &member.Base)
+	var MemberController controllers.Member
+	r.GET("/ping", MemberController.Ping, &MemberController.Base)
+	r.POST("/ping", MemberController.Ping, &MemberController.Base)
 
-	memberRouter := r.Group("/member", &member.Base)
+	memberRouter := r.Group("/member", &MemberController.Base)
 	{
-		memberRouter.GET("/login", member.Login)
-		memberRouter.POST("/login", member.Login)
-		memberRouter.GET("/ping", member.Ping)
+		memberRouter.GET("/login", MemberController.Login)
+		memberRouter.POST("/login", MemberController.Login)
+		memberRouter.GET("/ping", MemberController.Ping)
+	}
+
+	var AuthController controllers.Auth
+	authRouter := r.Group("/auth", &AuthController.Base)
+	{
+		authRouter.POST("getToken", AuthController.GetToken)
 	}
 
 	return r
