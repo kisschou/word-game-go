@@ -74,11 +74,6 @@ func (jwt *Jwt) New(data JwtPayload) string {
 	crypt.Str = string(jsonData) + conf.Get("hex_key").String()
 	jwt.signature = crypt.Sha256()
 
-	// save to redis
-	redis := new(lib.Redis)
-	redis.NewEngine()
-	redis.Engine.SetNX("jwt:"+jwt.header+"."+jwt.payload+"."+jwt.signature, 1, time.Duration(7200)*time.Second)
-
 	return jwt.header + "." + jwt.payload + "." + jwt.signature
 }
 
@@ -92,13 +87,6 @@ func (jwt *Jwt) Walk(data string) *Jwt {
 }
 
 func (jwt *Jwt) Check(data string) bool {
-	// check isExists in redis.
-	redis := new(lib.Redis)
-	redis.NewEngine()
-	if redis.Engine.Exists("jwt:"+data).Val() < 1 {
-		return false
-	}
-
 	jwt = jwt.Walk(data)
 	crypt := new(lib.Crypt)
 
@@ -134,12 +122,29 @@ func (jwt *Jwt) Check(data string) bool {
 	return true
 }
 
-func (jwt *Jwt) Get(data string, key string) interface{} {
+func (jwt *Jwt) Refresh(authorization string) string {
+	if jwt.Check(authorization) {
+		return authorization
+	}
+	jwt = jwt.Walk(authorization)
+	crypt := new(lib.Crypt)
+	// check payload.
+	crypt.Str = jwt.payload
+	jwtPayload := make(map[string]interface{})
+	json.Unmarshal([]byte(crypt.Base64Decode()), &jwtPayload)
+	return jwt.New(jwtPayload["data"].(map[string]interface{}))
+}
+
+func (jwt *Jwt) Get(data string, key string) (value interface{}) {
 	jwt = jwt.Walk(data)
 	crypt := new(lib.Crypt)
 	crypt.Str = jwt.payload
 	jwtPayload := make(map[string]interface{})
 	json.Unmarshal([]byte(crypt.Base64Decode()), &jwtPayload)
 	list := jwtPayload["data"].(map[string]interface{})
-	return list[key]
+	if _, ok := list[key]; ok {
+		value = list[key]
+		return
+	}
+	return
 }
