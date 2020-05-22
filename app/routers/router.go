@@ -14,8 +14,8 @@ func InitRouter() *core.HttpEngine {
 
 	memberRouter := r.Group("/member", &MemberController.Base)
 	{
-		memberRouter.GET("/login", MemberController.Login)
 		memberRouter.POST("/login", MemberController.Login)
+		memberRouter.POST("/info", MemberController.GetInfo)
 		memberRouter.GET("/ping", MemberController.Ping)
 	}
 
