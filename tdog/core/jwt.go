@@ -87,6 +87,11 @@ func (jwt *Jwt) Walk(data string) *Jwt {
 }
 
 func (jwt *Jwt) Check(data string) bool {
+	jwtData := strings.Split(data, ".")
+	if len(jwtData) != 3 {
+		return false
+	}
+
 	jwt = jwt.Walk(data)
 	crypt := new(lib.Crypt)
 
