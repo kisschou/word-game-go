@@ -7,6 +7,7 @@ import (
 type Util struct {
 }
 
+// 判断文件是否存在
 func (u *Util) FileExists(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -18,6 +19,7 @@ func (u *Util) FileExists(path string) bool {
 	return true
 }
 
+// 判断是否是目录
 func (u *Util) IsDir(path string) bool {
 	s, err := os.Stat(path)
 	if err != nil {
@@ -26,10 +28,12 @@ func (u *Util) IsDir(path string) bool {
 	return s.IsDir()
 }
 
+// 判断是否是文件
 func (u *Util) IsFile(path string) bool {
 	return !u.IsDir(path)
 }
 
+// 判断文件夹是否存在,不存在就创建
 func (u *Util) DirExistsAndCreate(path string) {
 	if !u.FileExists(path) {
 		err := os.MkdirAll(path, os.ModePerm)
