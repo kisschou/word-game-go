@@ -1,12 +1,9 @@
 package core
 
 import (
-	"fmt"
+	"wordgame/tdog/lib"
 )
 
 type Model struct {
-}
-
-func (model *Model) SayHi() {
-	fmt.Println("You extends core/model!")
+	Sql lib.MySql
 }

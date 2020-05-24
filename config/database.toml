@@ -1,4 +1,4 @@
-master_slave = true
+master_slave = false
 slave_list = ["slave"]
 debug = true
 

@@ -21,7 +21,7 @@ type (
 	}
 )
 
-func (r *Request) Recv(c *Context) {
+func (r *Request) New(c *Context) {
 	var ghostMap map[string][]string
 	ghostMap = make(map[string][]string)
 	for k, v := range c.Req.Header {

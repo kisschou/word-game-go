@@ -8,11 +8,11 @@
 
 > 主要用于存储用户相关的数据
 
-* session数据
+* 用户数据
 
 | key  | type | desc |
 | ---- | ---- | ---- |
-| session:{:token} | string | session在用 |
-| session:user:{:openId} | hash | 在线用户信息列表 |
+| user:openid:{:USER_OPEN_ID} | string | openId和用户id关联 |
+| user:info:{:USER_ID} | hash | 用户信息 |
 
 #### DB(1)
