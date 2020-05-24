@@ -175,7 +175,8 @@ func (demo *Demo) GetName(name string) (retStr DemoInfo) {
 ```
 
 * 模型
-> 不懂怎么给描述，索性直接上demo
+> 模型的生成建议使用xorm通过表结构自动生成模型后编写
+> xorm 生成模型参考: https://github.com/go-xorm/cmd/blob/master/README.md
 ```
 package models
 
