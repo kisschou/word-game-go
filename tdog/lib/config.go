@@ -93,38 +93,65 @@ func (c *Config) IsExists() bool {
 	return isExists
 }
 
-func (c *Config) RawData() interface{} {
-	return viper.Get(c.Key)
+func (c *Config) RawData() (data interface{}) {
+	beginConn(c)
+	data = viper.Get(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) String() string {
-	return viper.GetString(c.Key)
+func (c *Config) String() (data string) {
+	beginConn(c)
+	data = viper.GetString(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) Int() int {
-	return viper.GetInt(c.Key)
+func (c *Config) Int() (data int) {
+	beginConn(c)
+	data = viper.GetInt(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) Bool() bool {
-	return viper.GetBool(c.Key)
+func (c *Config) Bool() (data bool) {
+	beginConn(c)
+	data = viper.GetBool(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) IntSlice() []int {
-	return viper.GetIntSlice(c.Key)
+func (c *Config) IntSlice() (data []int) {
+	beginConn(c)
+	data = viper.GetIntSlice(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) StringMap() map[string]interface{} {
-	return viper.GetStringMap(c.Key)
+func (c *Config) StringMap() (data map[string]interface{}) {
+	beginConn(c)
+	data = viper.GetStringMap(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) StringMapString() map[string]string {
-	return viper.GetStringMapString(c.Key)
+func (c *Config) StringMapString() (data map[string]string) {
+	beginConn(c)
+	data = viper.GetStringMapString(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) StringMapStringSlice() map[string][]string {
-	return viper.GetStringMapStringSlice(c.Key)
+func (c *Config) StringMapStringSlice() (data map[string][]string) {
+	beginConn(c)
+	data = viper.GetStringMapStringSlice(c.Key)
+	endConn()
+	return
 }
 
-func (c *Config) StringSlice() []string {
-	return viper.GetStringSlice(c.Key)
+func (c *Config) StringSlice() (data []string) {
+	beginConn(c)
+	data = viper.GetStringSlice(c.Key)
+	endConn()
+	return
 }
