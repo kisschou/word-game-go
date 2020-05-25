@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
+
+	"wordgame/tdog/lib"
 )
 
 type (
@@ -60,7 +62,8 @@ func (engine *HttpEngine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 // Run .
 func (engine *HttpEngine) Run() {
-	http.ListenAndServe(":8000", engine)
+	ConfigLib := new(lib.Config)
+	http.ListenAndServe(":"+ConfigLib.Get("app_port").String(), engine)
 }
 
 /************************************/
@@ -167,17 +170,25 @@ func (c *Context) Next() {
 	 * 验签
 	 * 用户请求接口时候自动判断执行验签
 	 **/
+	ConfigLib := new(lib.Config)
 	// 跳过验签路由列表
-	ignoreRouter := []string{
-		"/member/login",
-		"/auth/getToken",
-	}
-	isAuth := true
+	ignoreRouter := ConfigLib.Get("ignore_auth").StringSlice()
+	isAuth := ConfigLib.Get("is_auth").Bool()
 	for _, v := range ignoreRouter {
 		if v == c.Req.RequestURI {
 			isAuth = false
 		}
 	}
+	// 跳过登录校验的路由列表
+	ignoreLoginRouter := ConfigLib.Get("ignore_login").StringSlice()
+	isLogin := ConfigLib.Get("is_login").Bool()
+	for _, v := range ignoreLoginRouter {
+		if v == c.Req.RequestURI {
+			isLogin = false
+		}
+	}
+
+	// 开始鉴权
 	if isAuth {
 		jwt := new(Jwt)
 		authorization := ""
@@ -193,15 +204,18 @@ func (c *Context) Next() {
 			return
 		}
 
-		// 验签通过获取用户open_id
-		openId := jwt.Get(authorization, "open_id").(string)
-		if len(openId) < 1 {
-			c.BaseController.Res.JSON(http.StatusInternalServerError, map[string]interface{}{
-				"message": "用户未登录",
-			})
-			return
+		// 开始登录校验
+		if isLogin {
+			// 验签通过获取用户open_id
+			openId := jwt.Get(authorization, "open_id").(string)
+			if len(openId) < 1 {
+				c.BaseController.Res.JSON(http.StatusInternalServerError, map[string]interface{}{
+					"message": "用户未登录",
+				})
+				return
+			}
+			c.BaseController.OpenId = openId
 		}
-		c.BaseController.OpenId = openId
 	}
 
 	c.handler()
