@@ -52,7 +52,7 @@
 │   │       ├── base.proto
 │   │       └── ...
 │   └── script                          // 脚本目录
-│       ├── protobuf-builder.sh                         
+│       ├── protobuf-builder.sh
 │       └── ...
 ├── go.mod                              // mod文件
 ├── go.sum
@@ -167,7 +167,7 @@ func (demo *Demo) GetName(name string) (retStr DemoInfo) {
     retStr = DemoModel.GetName(name)
 
     // 数据存储到redis
-    // 具体的redis操作请参考go-redis文档
+    // 更多的redis操作请参考go-redis文档
     demo.Base.Redis.Engine.SetNX(name, retStr, time.Duration(0)*time.Second)
 
     return
@@ -175,7 +175,8 @@ func (demo *Demo) GetName(name string) (retStr DemoInfo) {
 ```
 
 * 模型
-> 不懂怎么给描述，索性直接上demo
+> 模型的生成建议使用xorm通过表结构自动生成模型后编写;
+> xorm生成模型参考: https://github.com/go-xorm/cmd/blob/master/README.md
 ```
 package models
 
@@ -186,7 +187,7 @@ import (
 type (
     // 这个是模块定义的结构体
     DemoModel struct {
-        Base core.Model
+        Base core.Model // 这里需引用基础模型文件
     }
 
     // 数据库Column的结构体
@@ -201,7 +202,7 @@ func (demoModel *DemoModel) GetName(name) (retStr string) {
     demoInfo := new(Demo)
     demoModel.Base.Sql.NewEngine() // 初始化数据库驱动
     // 从数据库中读取数据
-    // 具体的数据库操作请参考xorm文档
+    // 更多的数据库操作请参考xorm文档
     result, _ := demoModel.Base.Sql.Engine.Where("name=?", name).Get(demoInfo)
     if !result {
         // 数据不存在
