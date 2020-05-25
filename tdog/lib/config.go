@@ -9,22 +9,8 @@ import (
 
 type (
 	Config struct {
-		File     string
-		Callback *Callback
-	}
-
-	Callback struct {
-		key                  string
-		isExists             bool
-		rawData              interface{}
-		stringData           string
-		intData              int
-		boolData             bool
-		intSlice             []int
-		stringMap            map[string]interface{}
-		stringMapString      map[string]string
-		stringMapStringSlice map[string][]string
-		stringSlice          []string
+		File string
+		Key  string
 	}
 )
 
@@ -90,82 +76,55 @@ func endConn() {
 func (c *Config) Get(sourceKey string) *Config {
 	file, key := action(sourceKey)
 	c.File = file
-	beginConn(c)
-	callback := c.Callback.New(key)
-	if file == "" || key == "" {
-		callback.isExists = false
-	} else {
-		callback.isExists = true
-		callback.Fill()
-	}
-	c.Callback = callback
+	c.Key = key
 	endConn()
 	return c
 }
 
 func (c *Config) IsExists() bool {
-	return c.Callback.isExists
+	isExists := false
+	beginConn(c)
+	if c.File == "" || c.Key == "" {
+		isExists = false
+	} else {
+		isExists = true
+	}
+	endConn()
+	return isExists
 }
 
 func (c *Config) RawData() interface{} {
-	return c.Callback.rawData
+	return viper.Get(c.Key)
 }
 
 func (c *Config) String() string {
-	return c.Callback.stringData
+	return viper.GetString(c.Key)
 }
 
 func (c *Config) Int() int {
-	return c.Callback.intData
+	return viper.GetInt(c.Key)
 }
 
 func (c *Config) Bool() bool {
-	return c.Callback.boolData
+	return viper.GetBool(c.Key)
 }
 
 func (c *Config) IntSlice() []int {
-	return c.Callback.intSlice
+	return viper.GetIntSlice(c.Key)
 }
 
 func (c *Config) StringMap() map[string]interface{} {
-	return c.Callback.stringMap
+	return viper.GetStringMap(c.Key)
 }
 
 func (c *Config) StringMapString() map[string]string {
-	return c.Callback.stringMapString
+	return viper.GetStringMapString(c.Key)
 }
 
 func (c *Config) StringMapStringSlice() map[string][]string {
-	return c.Callback.stringMapStringSlice
+	return viper.GetStringMapStringSlice(c.Key)
 }
 
 func (c *Config) StringSlice() []string {
-	return c.Callback.stringSlice
-}
-
-func (c *Callback) New(key string) *Callback {
-	return &Callback{
-		key:                  key,
-		rawData:              nil,
-		stringData:           "",
-		intData:              0,
-		boolData:             false,
-		intSlice:             nil,
-		stringMap:            nil,
-		stringMapString:      nil,
-		stringMapStringSlice: nil,
-		stringSlice:          nil,
-	}
-}
-
-func (c *Callback) Fill() {
-	c.rawData = viper.Get(c.key)
-	c.stringData = viper.GetString(c.key)
-	c.intData = viper.GetInt(c.key)
-	c.boolData = viper.GetBool(c.key)
-	c.intSlice = viper.GetIntSlice(c.key)
-	c.stringMap = viper.GetStringMap(c.key)
-	c.stringMapString = viper.GetStringMapString(c.key)
-	c.stringMapStringSlice = viper.GetStringMapStringSlice(c.key)
-	c.stringSlice = viper.GetStringSlice(c.key)
+	return viper.GetStringSlice(c.Key)
 }
