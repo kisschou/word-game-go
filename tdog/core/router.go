@@ -207,7 +207,10 @@ func (c *Context) Next() {
 		// 开始登录校验
 		if isLogin {
 			// 验签通过获取用户open_id
-			openId := jwt.Get(authorization, "open_id").(string)
+			openId := ""
+			if jwt.Get(authorization, "open_id") != nil {
+				openId = jwt.Get(authorization, "open_id").(string)
+			}
 			if len(openId) < 1 {
 				c.BaseController.Res.JSON(http.StatusInternalServerError, map[string]interface{}{
 					"message": "用户未登录",
