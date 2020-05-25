@@ -1,21 +1,28 @@
+# 是否开启集群 bool
 master_slave = false
+
+# 从库列表 []string
 slave_list = ["slave"]
+
+# 是否开启SQL_DEBUG bool
 debug = true
 
+# 主库，必须存在
 [master]
-host = "127.0.0.1"
-port = "3306"
-user = "root"
-pass = "root"
-db = "biushop"
-charset = "utf8mb4"
-prefix = ""
+host = "127.0.0.1" # 地址
+port = "3306" # 端口
+user = "root" # 用户
+pass = "root" # 密码
+db = "biushop" # 数据库
+charset = "utf8mb4" # 字符集
+prefix = "" # 表前缀
 
+# 从库 按需
 [slave]
-host = "127.0.0.1"
-port = "3306"
-user = "root"
-pass = "root"
-db = "biushop"
-charset = "utf8mb4"
-prefix = ""
+host = "127.0.0.1" # 地址
+port = "3306" # 端口
+user = "root" # 用户
+pass = "root" # 密码
+db = "biushop" # 数据库
+charset = "utf8mb4" # 字符集
+prefix = "" # 表前缀
