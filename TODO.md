@@ -1,4 +1,5 @@
 急需修改解决问题:
+0. 内部对外发送请求
 1. 日志模块重构 => 上ELK
 2. 新开线程启动WebSocket服务 => 加上RabbitMQ
 3. Swagger 或 RESTFul换gRPC
