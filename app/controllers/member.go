@@ -30,6 +30,7 @@ func (member *Member) Login() {
 		member.Base.Res.JSON(http.StatusInternalServerError, core.H{
 			"code": "ERROR_REQUEST_PARAMS",
 		})
+		return
 	}
 
 	MemberService := new(services.Member)

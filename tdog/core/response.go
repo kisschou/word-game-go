@@ -25,7 +25,8 @@ func (r *Response) JSON(code int, obj interface{}) {
 	encoder := json.NewEncoder(r.context.Writer)
 	if code != http.StatusOK {
 		ErrorCore := new(Error)
-		newObj := obj.(map[string]interface{})
+		newObj := make(map[string]interface{})
+		newObj = obj.(H)
 		if _, ok := newObj["code"]; ok {
 			newObj["message"] = ErrorCore.GetError(newObj["code"].(string))
 			delete(newObj, "code")

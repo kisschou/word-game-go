@@ -198,7 +198,7 @@ func (c *Context) Next() {
 			}
 		}
 		if len(authorization) < 1 || !jwt.Check(authorization) {
-			c.BaseController.Res.JSON(http.StatusUnauthorized, map[string]interface{}{
+			c.BaseController.Res.JSON(http.StatusUnauthorized, H{
 				"code": "ERROR_UNAUTHOZED",
 			})
 			return
@@ -212,7 +212,7 @@ func (c *Context) Next() {
 				openId = jwt.Get(authorization, "open_id").(string)
 			}
 			if len(openId) < 1 {
-				c.BaseController.Res.JSON(http.StatusInternalServerError, map[string]interface{}{
+				c.BaseController.Res.JSON(http.StatusInternalServerError, H{
 					"code": "ERROR_UNLOGIN",
 				})
 				return
