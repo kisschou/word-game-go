@@ -85,6 +85,17 @@ shell> cd word-game-go
 
 ## 运行项目
 shell> go run .
+
+## 项目打包
+## ...Linux or Mac OS:
+shell> go build .
+## 会在目录下生成一个名为wordgame的二进制文件
+## 运行:
+shell> ./wordgame
+## ...Windows:
+shell> CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build .
+## 会生成一个名为 wordgame.exe 的可执行文件
+## 在Windows下双击即可运行
 ```
 
 #### 业务添加说明
