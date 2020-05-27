@@ -1,0 +1,9 @@
+# 基础
+ERROR_UNAUTHOZED = "Unauthorized!"
+ERROR_UNLOGIN = "用户未登录!"
+ERROR_REQUEST_PARAMS = "参数错误!"
+
+# 用户模块
+ERROR_LOGIN_PASSWORD = "密码错误!"
+ERROR_LOGIN_LOCKED = "用户不存在或者已经锁定!"
+ERROR_LOGIN_MISSING = "未找到该用户数据!"

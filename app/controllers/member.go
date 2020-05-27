@@ -28,15 +28,16 @@ func (member *Member) Login() {
 
 	if len(username) < 5 || len(password) < 6 {
 		member.Base.Res.JSON(http.StatusInternalServerError, core.H{
-			"message": "参数错误!",
+			"code": "ERROR_REQUEST_PARAMS",
 		})
+		return
 	}
 
 	MemberService := new(services.Member)
 	memberInfo, err := MemberService.Login(username, password)
 	if err != nil {
 		member.Base.Res.JSON(http.StatusInternalServerError, core.H{
-			"message": err.Error(),
+			"code": err.Error(),
 		})
 		return
 	}

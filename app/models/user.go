@@ -47,12 +47,12 @@ func (userModel *UserModel) Login(username string, password string) (userId int6
 	result, err := userModel.Base.Sql.Engine.Where("username=?", username).Get(userInfo)
 	if !result || userInfo.Enabled != 1 {
 		userInfo = nil
-		err = errors.New("用户不存在或者已经锁定!")
+		err = errors.New("ERROR_LOGIN_LOCKED")
 		return
 	}
 	if password != userInfo.Password {
 		userInfo = nil
-		err = errors.New("密码错误!")
+		err = errors.New("ERROR_LOGIN_PASSWORD")
 		return
 	}
 	userId = userInfo.Id
@@ -64,7 +64,7 @@ func (userModel *UserModel) GetInfo(userId int64) (memberInfo map[string]interfa
 	userModel.Base.Sql.NewEngine()
 	result, err := userModel.Base.Sql.Engine.Where("id=?", userId).Get(userInfo)
 	if !result {
-		err = errors.New("未找到该用户数据!")
+		err = errors.New("ERROR_LOGIN_MISSING")
 		return
 	}
 	memberInfo = userInfo.ToMap()

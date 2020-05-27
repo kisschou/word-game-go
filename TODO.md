@@ -1,7 +1,18 @@
 急需修改解决问题:
-1. 自动验证..
-2. 因viper模块不够稳定, 考虑替换viper模块, 感觉可以自己利用sqlite构建一个。有空试试。
-3. 加入Oauth2
+0. 内部对外发送请求
+1. 日志模块重构 => 上ELK
+2. 新开线程启动WebSocket服务 => 加上RabbitMQ
+3. Swagger 或 RESTFul换gRPC
+4. 自动验证..
+5. 因viper模块不够稳定, 考虑替换viper模块, 感觉可以自己利用sqlite构建一个。有空试试。
+6. 加入Oauth2
+
+整理微服务:
+1. 用户服务 - user_service
+2. 鉴权服务 - auth_service
+3. 日志服务 - logger_service
+4. 短信服务 - sms_service
+5. 验证码服务 - verifycode_service
 
 继续做:
 so many..

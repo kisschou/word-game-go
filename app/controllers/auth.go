@@ -14,7 +14,7 @@ func (auth *Auth) GetToken() {
 	jwt := new(core.Jwt)
 	authorization := jwt.New(make(map[string]interface{}))
 	if _, ok := auth.Base.Req.Header["Authorization"]; ok {
-		if len(auth.Base.Req.Header["Authorization"]) > 0 {
+		if len(auth.Base.Req.Header["Authorization"]) > 0 && len(auth.Base.Req.Header["Authorization"][0]) > 0 {
 			authorization = jwt.Refresh(auth.Base.Req.Header["Authorization"][0])
 		}
 	}
