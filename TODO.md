@@ -13,6 +13,7 @@
 3. 日志服务 - logger_service
 4. 短信服务 - sms_service
 5. 验证码服务 - verifycode_service
+6. 调试工具 - doctool
 
 继续做:
 so many..
