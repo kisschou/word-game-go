@@ -1,0 +1,5 @@
+home_url = "http://"
+auth_url = "http://"
+user_url = "http://"
+sms_url = "http://"
+verifycode_url = "http://"
