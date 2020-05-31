@@ -1,5 +1,14 @@
-home_url = "http://"
-auth_url = "http://"
-user_url = "http://"
-sms_url = "http://"
-verifycode_url = "http://"
+# 网关服务地址
+gateway_url = "http://127.0.0.1:8000"
+
+# 验签服务地址
+auth_url = "http://127.0.0.1:8000"
+
+# 用户服务地址
+user_url = "http://127.0.0.1:8000"
+
+# 验签证服务地址
+verifycode_url = "http://127.0.0.1:8000"
+
+# 短信服务地址
+sms_url = "http://127.0.0.1:8000"
