@@ -14,6 +14,7 @@
 4. 短信服务 - sms_service
 5. 验证码服务 - verifycode_service
 6. 调试工具 - doctool
+7. 网关服务 - feature_kisschou_feign
 
 继续做:
 so many..

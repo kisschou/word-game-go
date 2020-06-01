@@ -7,3 +7,7 @@ ERROR_REQUEST_PARAMS = "参数错误!"
 ERROR_LOGIN_PASSWORD = "密码错误!"
 ERROR_LOGIN_LOCKED = "用户不存在或者已经锁定!"
 ERROR_LOGIN_MISSING = "未找到该用户数据!"
+
+# Feign模块
+ERROR_FEIGN_SERVICE_MISSING = "请求的服务不存在!"
+ERROR_FEIGN_REQUEST_FAIL = "请求失败!"

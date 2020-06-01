@@ -25,5 +25,11 @@ func InitRouter() *core.HttpEngine {
 		authRouter.POST("getToken", AuthController.GetToken)
 	}
 
+	var FeignController controllers.Feign
+	feignRouter := r.Group("/feign", &FeignController.Base)
+	{
+		feignRouter.POST("/http", FeignController.Http)
+	}
+
 	return r
 }
