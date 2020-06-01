@@ -97,6 +97,7 @@ shell> CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build .
 ## 会生成一个名为 wordgame.exe 的可执行文件
 ## 在Windows下双击即可运行
 ```
+> 本项目在windows下运行会报config找不到的问题，这是因为Linux和Windows下路径分隔符"/"和"\\"的问题。
 
 #### 业务添加说明
 * 路由
