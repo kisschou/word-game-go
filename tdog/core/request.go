@@ -11,7 +11,7 @@ type (
 		Params  map[string][]string
 		Get     map[string][]string
 		Post    map[string][]string
-		Put     map[string]string
+		Put     map[string]interface{}
 		IsGet   bool
 		IsPost  bool
 		IsPut   bool
@@ -38,7 +38,7 @@ func (r *Request) New(c *Context) {
 	if _, ok := c.Req.Header["Content-Type"]; ok {
 		if strings.Contains(c.Req.Header["Content-Type"][0], "json") {
 			decoder := json.NewDecoder(c.Req.Body)
-			var jsonParams map[string]string
+			var jsonParams map[string]interface{}
 			decoder.Decode(&jsonParams)
 			r.Put = jsonParams
 		}
@@ -108,7 +108,7 @@ func merge2Params(r *Request) *Request {
 	}
 	if len(r.Put) > 0 {
 		for k, v := range r.Put {
-			params[k] = []string{v}
+			params[k] = []string{v.(string)}
 		}
 	}
 	r.Params = params
