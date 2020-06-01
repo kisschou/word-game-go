@@ -38,13 +38,14 @@ type (
  * fmt.Println("===========================> " + HttpRequestLib.Method + " " + HttpRequestLib.Url)
  * fmt.Println(res)
  */
-func (hp *HttpRequest) FormRequest() (resData string, err error) {
+func (hp *HttpRequest) FormRequest() (httpCode int, resData string, err error) {
 	client := &http.Client{}
 
 	reqDataJson, _ := json.Marshal(hp.Params)
 
 	req, err := http.NewRequest(hp.Method, hp.Url, bytes.NewBuffer(reqDataJson))
 	if err != nil {
+		httpCode = http.StatusInternalServerError
 		return
 	}
 
@@ -57,9 +58,11 @@ func (hp *HttpRequest) FormRequest() (resData string, err error) {
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
+		httpCode = http.StatusInternalServerError
 		return
 	}
 
+	httpCode = res.StatusCode
 	resData = string(body)
 	return
 }
@@ -97,14 +100,14 @@ func (hp *HttpRequest) FormRequest() (resData string, err error) {
  * mt.Println("===========================> " + HttpRequestLib.Method + " " + HttpRequestLib.Url)
  * fmt.Println(res)
  */
-func (hp *HttpRequest) BytesPost() (string, error) {
+func (hp *HttpRequest) BytesPost() (int, string, error) {
 	data, _ := json.Marshal(hp.Params)
 	body := bytes.NewReader(data)
 	req, err := http.NewRequest(hp.Method, hp.Url, body)
 	if err != nil {
 		logger := Logger{Level: 0, Key: "error"}
 		logger.New(err.Error())
-		return "", err
+		return http.StatusInternalServerError, "", err
 	}
 
 	for k, v := range hp.Header {
@@ -116,7 +119,7 @@ func (hp *HttpRequest) BytesPost() (string, error) {
 	if err != nil {
 		logger := Logger{Level: 0, Key: "error"}
 		logger.New(err.Error())
-		return "", err
+		return http.StatusInternalServerError, "", err
 	}
 	defer resp.Body.Close()
 	b, err := ioutil.ReadAll(resp.Body)
@@ -124,5 +127,6 @@ func (hp *HttpRequest) BytesPost() (string, error) {
 		logger := Logger{Level: 0, Key: "error"}
 		logger.New(err.Error())
 	}
-	return string(b), err
+
+	return resp.StatusCode, string(b), err
 }

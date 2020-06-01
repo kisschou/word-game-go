@@ -58,10 +58,11 @@ func (feign *Feign) Target() {
 	HttpRequestLib.Header = feign.Header
 	HttpRequestLib.Url = url
 	HttpRequestLib.Params = feign.Body
-	res, err := HttpRequestLib.FormRequest()
+	code, res, err := HttpRequestLib.FormRequest()
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("===========================> " + HttpRequestLib.Method + " " + HttpRequestLib.Url)
+	fmt.Println("===========================> " + HttpRequestLib.Method + " " + HttpRequestLib.Url + " ")
+	fmt.Println(code)
 	fmt.Println(res)
 }
