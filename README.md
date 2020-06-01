@@ -65,7 +65,7 @@ shell> go run .
 shell> go build -o gateway-service .
 shell> ./gateway-service # Run
 ```
-> 本项目在windows下运行会报config找不到的问题，这是因为Linux和Windows下路径分隔符"/"和"\"的问题。
+> 本项目在windows下运行会报config找不到的问题，这是因为Linux和Windows下路径分隔符"/"和"\\"的问题。
 
 ## 其他
 Kisschou&copy;2020.All Rights.
