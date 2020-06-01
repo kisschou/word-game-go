@@ -29,14 +29,17 @@ func (feign *Feign) Decoder(data string) *Feign {
 		fmt.Println(err)
 	}
 
+	CryptLib := new(lib.Crypt)
 	feign.Method = dataMap["method"].(string)
 	feign.BaseUrl = dataMap["base_url"].(string)
 	feign.ActionUrl = dataMap["action_url"].(string)
 	headerMap := make(map[string]string)
-	json.Unmarshal([]byte(dataMap["header"].(string)), &headerMap)
+	CryptLib.Str = dataMap["header"].(string)
+	json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &headerMap)
 	feign.Header = headerMap
 	bodyMap := make(map[string]interface{})
-	json.Unmarshal([]byte(dataMap["body"].(string)), &bodyMap)
+	CryptLib.Str = dataMap["body"].(string)
+	json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &bodyMap)
 	feign.Body = bodyMap
 
 	return feign
