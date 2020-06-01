@@ -60,6 +60,8 @@
 └── tdog                                // 核心功能实现
     ├── core                            // 核心包
     │   ├── controller.go               // 基础控制器类，希望每个控制器都引用他
+    │   ├── error.go                    // 错误处理
+    │   ├── feign.go                    // Feign请求转发处理脚本
     │   ├── jwt.go                      // 一个垃圾到可能会被嘲讽的东西
     │   ├── model.go                    // 基础模型类，希望每个模型都引用他
     │   ├── request.go                  // 请求数据类，所谓的统一入口
@@ -69,6 +71,7 @@
     └── lib                             // 附加方法
         ├── config.go                   // 配置文件获取类，viper作用于此
         ├── crypt.go                    // 加密方法都放在这里
+        ├── http_request.go             // 对外模拟请求方法
         ├── logger.go                   // 日志类, logrus作用于此
         ├── mysql.go                    // MySQL操作类, xorm作用于此
         ├── redis.go                    // Redis操作类, go-redis作用于此
