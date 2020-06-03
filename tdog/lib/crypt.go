@@ -51,3 +51,21 @@ func (h *Crypt) UrlBase64Decode() string {
 	}
 	return string(data)
 }
+
+func (h *Crypt) BiuPwdNewBuilder(password string) (salt string, newPassword string) {
+	ConfigLib := new(Config)
+	UtilLib := new(Util)
+	salt = UtilLib.RandomStr(4)
+	h.Str = password + salt
+	h.Str = h.Sha256() + ConfigLib.Get("hex_key").String()
+	newPassword = h.Sha256()
+	return
+}
+
+func (h *Crypt) BiuPwdBuilder(salt string, password string) (newPassword string) {
+	ConfigLib := new(Config)
+	h.Str = password + salt
+	h.Str = h.Sha256() + ConfigLib.Get("hex_key").String()
+	newPassword = h.Sha256()
+	return
+}
