@@ -15,7 +15,7 @@ user = "root" # 用户
 pass = "root" # 密码
 db = "biushop" # 数据库
 charset = "utf8mb4" # 字符集
-prefix = "" # 表前缀
+prefix = "biu_" # 表前缀
 
 # 从库 按需
 [slave]
@@ -25,4 +25,4 @@ user = "root" # 用户
 pass = "root" # 密码
 db = "biushop" # 数据库
 charset = "utf8mb4" # 字符集
-prefix = "" # 表前缀
+prefix = "biu_" # 表前缀
