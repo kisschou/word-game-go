@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"wordgame/tdog/core"
+	"wordgame/tdog/lib"
 )
 
 type (
@@ -77,6 +78,9 @@ func (userModel *UserModel) Login(username string, password string) (userId int6
 		err = errors.New("ERROR_LOGIN_LOCKED")
 		return
 	}
+
+	CryptLib := new(lib.Crypt)
+	password = CryptLib.BiuPwdBuilder(userInfo.Salt, password)
 	if password != userInfo.Password {
 		userInfo = nil
 		err = errors.New("ERROR_LOGIN_PASSWORD")
