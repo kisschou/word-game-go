@@ -10,6 +10,14 @@ type Auth struct {
 	Base core.Controller
 }
 
+// swagger:operation POST /auth/getToken
+// ---
+// summary: 获取授权信息
+// description: 获取授权信息
+// parameters:
+// responses:
+//   200: repoResp
+//   401: errMsg
 func (auth *Auth) GetToken() {
 	jwt := new(core.Jwt)
 	authorization := jwt.New(make(map[string]interface{}))

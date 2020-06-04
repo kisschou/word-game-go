@@ -11,6 +11,24 @@ type Member struct {
 	Base core.Controller
 }
 
+// swagger:operation POST /member/login
+// ---
+// summary: 用户登录
+// description: 用户登录
+// parameters:
+// - name: username
+//   in: body
+//   description: 用户名
+//   type: string
+//   required: true
+// - name: password
+//   in: body
+//   description: 密码
+//   type: string
+//   required: true
+// responses:
+//   200: repoResp
+//   401: errMsg
 func (member *Member) Login() {
 	username := ""
 	password := ""
@@ -50,6 +68,19 @@ func (member *Member) Login() {
 	})
 }
 
+// swagger:operation POST /member/info
+// ---
+// summary: 获取用户信息
+// description: 获取用户信息
+// parameters:
+// - name: open_id
+//   in: body
+//   description: 用户openid
+//   type: string
+//   required: false
+// responses:
+//   200: repoResp
+//   401: errMsg
 func (member *Member) GetInfo() {
 	openId := member.Base.OpenId
 	if _, ok := member.Base.Req.Params["open_id"]; ok {
