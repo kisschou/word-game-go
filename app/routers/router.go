@@ -19,17 +19,5 @@ func InitRouter() *core.HttpEngine {
 		memberRouter.GET("/ping", MemberController.Ping)
 	}
 
-	var AuthController controllers.Auth
-	authRouter := r.Group("/auth", &AuthController.Base)
-	{
-		authRouter.POST("getToken", AuthController.GetToken)
-	}
-
-	var FeignController controllers.Feign
-	feignRouter := r.Group("/feign", &FeignController.Base)
-	{
-		feignRouter.POST("/http", FeignController.Http)
-	}
-
 	return r
 }
