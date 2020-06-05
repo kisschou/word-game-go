@@ -8,6 +8,7 @@ require (
 	github.com/go-swagger/go-swagger v0.23.0 // indirect
 	github.com/go-xorm/cmd/xorm v0.0.0-20190426080617-f87981e709a1 // indirect
 	github.com/go-xorm/xorm v0.7.9
+	github.com/gorilla/websocket v1.4.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/sirupsen/logrus v1.5.0
 	github.com/spf13/viper v1.6.3
