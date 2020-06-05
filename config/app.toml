@@ -12,11 +12,11 @@ hex_key = "1UgZfL<=Au3M9dQrcB7yzzd==8?xlZ:T3oP1id>jKWi4Bc9Kz<RbTSXqgPWJXxes945rz
 is_auth = true
 
 # 略过验签的路由 []string
-ignore_auth = ["/auth/getToken"]
+ignore_auth = ["/auth/get", "/auth/refresh", "/auth/verify"]
 
 # 是否开启登录验证 bool
 # 无论是关闭还是缺省, 都将不会自动解析openId
-is_login = true
+is_login = false
 
 # 略过登录验证的路由 []string
 ignore_login = ["/member/login", "/feign/http"]

@@ -8,27 +8,21 @@ import (
 func InitRouter() *core.HttpEngine {
 	r := core.NewEngine()
 
-	var MemberController controllers.Member
-	r.GET("/ping", MemberController.Ping, &MemberController.Base)
-	r.POST("/ping", MemberController.Ping, &MemberController.Base)
-
-	memberRouter := r.Group("/member", &MemberController.Base)
-	{
-		memberRouter.POST("/login", MemberController.Login)
-		memberRouter.POST("/info", MemberController.GetInfo)
-		memberRouter.GET("/ping", MemberController.Ping)
-	}
-
 	var AuthController controllers.Auth
 	authRouter := r.Group("/auth", &AuthController.Base)
 	{
-		authRouter.POST("getToken", AuthController.GetToken)
-	}
-
-	var FeignController controllers.Feign
-	feignRouter := r.Group("/feign", &FeignController.Base)
-	{
-		feignRouter.POST("/http", FeignController.Http)
+		// 获取token
+		authRouter.GET("get", AuthController.GetToken)
+		// 刷新token
+		authRouter.GET("refresh", AuthController.RefreshToken)
+		// token校验
+		authRouter.POST("verify", AuthController.VerifyToken)
+		// 登录校验
+		authRouter.POST("verifyLogin", AuthController.VerifyLogin)
+		// 获取指定参数
+		authRouter.POST("getKey", AuthController.GetKey)
+		// 获取所有参数
+		authRouter.POST("getAllKeys", AuthController.GetAllKeys)
 	}
 
 	return r
