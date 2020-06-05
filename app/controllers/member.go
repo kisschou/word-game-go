@@ -73,6 +73,27 @@ func (member *Member) Login() {
 	})
 }
 
+// swagger:operation POST /member/register member register
+// ---
+// summary: 用户注册
+// description: 用户注册
+// parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: true
+// - name: open_id
+//   in: body
+//   description: 用户openid
+//   type: string
+//   required: false
+// responses:
+//   200: repoResp
+//   401: errMsg
+func (member *Member) Register() {
+}
+
 // swagger:operation POST /member/info member info
 // ---
 // summary: 获取用户信息
