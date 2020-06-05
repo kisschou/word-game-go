@@ -15,6 +15,7 @@
 5. 验证码服务 - verifycode_service
 6. 调试工具 - doctool
 7. 网关服务 - feature_kisschou_feign
+7. 许可服务 (鉴权子服务) - permission_service
 
 继续做:
 so many..
