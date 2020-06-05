@@ -10,11 +10,16 @@ type Auth struct {
 	Base core.Controller
 }
 
-// swagger:operation POST /auth/getToken
+// swagger:operation POST /auth/getToken auth getToken
 // ---
 // summary: 获取授权信息
 // description: 获取授权信息
 // parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: false
 // responses:
 //   200: repoResp
 //   401: errMsg

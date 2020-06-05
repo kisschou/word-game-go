@@ -11,11 +11,16 @@ type Member struct {
 	Base core.Controller
 }
 
-// swagger:operation POST /member/login
+// swagger:operation POST /member/login member login
 // ---
 // summary: 用户登录
 // description: 用户登录
 // parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: true
 // - name: username
 //   in: body
 //   description: 用户名
@@ -28,7 +33,7 @@ type Member struct {
 //   required: true
 // responses:
 //   200: repoResp
-//   401: errMsg
+//   401: badReq
 func (member *Member) Login() {
 	username := ""
 	password := ""
@@ -68,11 +73,16 @@ func (member *Member) Login() {
 	})
 }
 
-// swagger:operation POST /member/info
+// swagger:operation POST /member/info member info
 // ---
 // summary: 获取用户信息
 // description: 获取用户信息
 // parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: true
 // - name: open_id
 //   in: body
 //   description: 用户openid

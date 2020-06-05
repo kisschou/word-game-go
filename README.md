@@ -228,5 +228,72 @@ func (demoModel *DemoModel) GetName(name) (retStr string) {
 }
 ```
 
+## Swagger
+> 这里使用的是`go-swagger`包
+
+#### 安装
+```
+Windows:
+Command> go get -u github.com/go-swagger/go-swagger/cmd/swagger
+## 然后设置swagger目录到环境变量,如果swagger成功唤醒请忽略
+
+Linux:
+shell> go get -u github.com/go-swagger/go-swagger/cmd/swagger
+shell> export PATH=$GOPATH/bin:$PATH
+
+MacOS:
+shell> brew tap go-swagger/go-swagger
+shell> brew install go-swagger
+```
+> 也可以直接去[官方下载](https://github.com/go-swagger/go-swagger/releases)
+
+#### 使用
+```
+## 1. 在对外的路由指向的controller中用注释的方式标识接口信息
+// swagger:operation POST /member/login member login
+// ---
+// summary: 用户登录
+// description: 用户登录
+// parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: true
+// - name: username
+//   in: body
+//   description: 用户名
+//   type: string
+//   required: true
+// - name: password
+//   in: body
+//   description: 密码
+//   type: string
+//   required: true
+// responses:
+//   200: repoResp
+//   401: badReq
+
+#### 解释
+// swagger:operaion [POST:请求方式(可以是GET\PUT\DELETE...)] [url:请求地址] [标签] [用于此端点的请求]
+// 注: 最后两个理解为id和节点, 用于标注地址
+// --- 这个部分下面是YAML格式的swagger规范.确保您的缩进是一致的和正确的
+// summary: 标题
+// description: 描述
+// parametres:   下面是参数了
+// - name: 参数名
+    in: [header|body|query] 参数的位置
+    description: 描述
+    type: 类型
+    required: 是否必须
+// responses: 响应
+
+## 2. 根目录下运行, 会自动遍历go文件生成接口文件
+shell> swagger generate spec -o ./swagger.json
+
+## 3. 启动swagger服务
+shell> swagger serve -F=swagger ./swagger.json
+```
+
 ## 其他
 Kisschou&copy;2020.All Rights.
