@@ -67,7 +67,8 @@
     │   ├── request.go                  // 请求数据类，所谓的统一入口
     │   ├── response.go                 // 返回数据类，所谓的统一出口
     │   ├── router.go                   // 路由解析类，httprouter作用于此
-    │   └── service.go                  // 基础服务类，希望每个服务都引用他
+    │   ├── service.go                  // 基础服务类，希望每个服务都引用他
+    │   └── websocket.go                // WebSocket服务类
     └── lib                             // 附加方法
         ├── config.go                   // 配置文件获取类，viper作用于此
         ├── crypt.go                    // 加密方法都放在这里
