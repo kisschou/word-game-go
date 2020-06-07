@@ -91,8 +91,8 @@ func (auth *Auth) VerifyToken() {
 
 // swagger:operation POST /auth/verifyLogin auth verifyLogin
 // ---
-// summary: 校验授权信息
-// description: 校验授权信息
+// summary: 校验登入状态
+// description: 校验登入状态
 // parameters:
 // - name: authorization
 //   in: header
@@ -124,8 +124,8 @@ func (auth *Auth) VerifyLogin() {
 
 // swagger:operation POST /auth/getKey auth getKey
 // ---
-// summary: 校验授权信息
-// description: 校验授权信息
+// summary: 获取指定数据
+// description: 获取指定数据
 // parameters:
 // - name: authorization
 //   in: header
@@ -162,8 +162,8 @@ func (auth *Auth) GetKey() {
 
 // swagger:operation POST /auth/getAllKeys auth getAllKeys
 // ---
-// summary: 校验授权信息
-// description: 校验授权信息
+// summary: 获取所有数据
+// description: 获取所有数据
 // parameters:
 // - name: authorization
 //   in: header
