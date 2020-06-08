@@ -12,7 +12,7 @@ func InitRouter() *core.HttpEngine {
 	authRouter := r.Group("/auth", &AuthController.Base)
 	{
 		// 获取token
-		authRouter.GET("get", AuthController.GetToken)
+		authRouter.GET("token", AuthController.GetToken)
 		// 刷新token
 		authRouter.GET("refresh", AuthController.RefreshToken)
 		// token校验
