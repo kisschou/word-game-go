@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"reflect"
 	"strings"
 )
 
@@ -108,7 +109,12 @@ func merge2Params(r *Request) *Request {
 	}
 	if len(r.Put) > 0 {
 		for k, v := range r.Put {
-			params[k] = []string{v.(string)}
+			if reflect.TypeOf(v).Kind().String() == "map" {
+				dataJson, _ := json.Marshal(v.(map[string]interface{}))
+				params[k] = []string{string(dataJson)}
+			} else {
+				params[k] = []string{v.(string)}
+			}
 		}
 	}
 	r.Params = params
