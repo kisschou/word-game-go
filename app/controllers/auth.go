@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"wordgame/tdog/core"
@@ -15,18 +16,26 @@ type Auth struct {
 // summary: 获取授权信息
 // description: 获取授权信息
 // parameters:
-// - name: authorization
+// - name: data
 //   in: body
 //   description: 数据集合
-//   type: string
+//   type: json
 //   required: false
 // responses:
 //   200: repoResp
 //   401: errMsg
 func (auth *Auth) GetToken() {
 	JwtCore := new(core.Jwt)
+	authorization := JwtCore.New(make(map[string]interface{}))
+	if _, ok := auth.Base.Req.Params["data"]; ok {
+		if len(auth.Base.Req.Params["data"]) > 0 && len(auth.Base.Req.Params["data"][0]) > 0 {
+			dataMap := make(map[string]interface{})
+			json.Unmarshal([]byte(auth.Base.Req.Params["data"][0]), &dataMap)
+			authorization = JwtCore.New(dataMap)
+		}
+	}
 	auth.Base.Res.JSON(http.StatusOK, core.H{
-		"authorization": JwtCore.New(make(map[string]interface{})),
+		"authorization": authorization,
 	})
 }
 
