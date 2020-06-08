@@ -1,5 +1,5 @@
 # 产品名 string
-app_name = "wordgame-go"
+app_name = "feign-service"
 
 # 服务端口 string
 app_port = "8000"
