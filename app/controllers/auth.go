@@ -15,6 +15,11 @@ type Auth struct {
 // summary: 获取授权信息
 // description: 获取授权信息
 // parameters:
+// - name: authorization
+//   in: body
+//   description: 数据集合
+//   type: string
+//   required: false
 // responses:
 //   200: repoResp
 //   401: errMsg
