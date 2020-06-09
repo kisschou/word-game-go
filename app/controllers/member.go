@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"wordgame/app/services"
 	"wordgame/tdog/core"
+	"wordgame/tdog/lib"
 )
 
 type Member struct {
@@ -65,10 +68,25 @@ func (member *Member) Login() {
 		return
 	}
 
-	jwt := new(core.Jwt)
+	authorization := ""
+	ConfigLib := new(lib.Config)
+	HttpRequestLib := new(lib.HttpRequest)
+	body := make(map[string]interface{})
+	body["open_id"] = memberInfo["OpenId"]
+	HttpRequestLib.Method = "GET"
+	HttpRequestLib.Url = ConfigLib.Get("api_url.gateway_url").String() + "/feign/http"
+	// HttpRequestLib.Params = body
+	httpCode, res, err := HttpRequestLib.BytesPost()
+	fmt.Println(httpCode, res, err)
+	if httpCode == http.StatusOK && err != nil {
+		resMap := make(map[string]interface{})
+		json.Unmarshal([]byte(res), &resMap)
+		authorization = resMap["authorization"].(string)
+	}
+
 	member.Base.Res.JSON(http.StatusOK, core.H{
 		"message":      "success",
-		"access_token": jwt.New(map[string]interface{}{"open_id": memberInfo["OpenId"]}),
+		"access_token": authorization,
 		"data":         memberInfo,
 	})
 }
