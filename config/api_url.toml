@@ -2,13 +2,13 @@
 gateway_url = "http://127.0.0.1:8000"
 
 # 验签服务地址
-auth_url = "http://127.0.0.1:8000"
+auth_url = "http://127.0.0.1:8001"
 
 # 用户服务地址
-user_url = "http://127.0.0.1:8000"
+user_url = "http://127.0.0.1:8002"
 
 # 验签证服务地址
-verifycode_url = "http://127.0.0.1:8000"
+verifycode_url = "http://127.0.0.1:8003"
 
 # 短信服务地址
-sms_url = "http://127.0.0.1:8000"
+sms_url = "http://127.0.0.1:8004"
