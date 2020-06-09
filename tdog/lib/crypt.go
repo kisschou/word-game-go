@@ -4,6 +4,7 @@ import (
 	ParentMd5 "crypto/md5"
 	ParentSha1 "crypto/sha1"
 	ParentSha256 "crypto/sha256"
+	ParentSha512 "crypto/sha512"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
@@ -23,6 +24,13 @@ func (h *Crypt) Sha1() string {
 
 func (h *Crypt) Sha256() string {
 	hash := ParentSha256.New()
+	hash.Write([]byte(h.Str))
+	sum := hash.Sum(nil)
+	return hex.EncodeToString(sum)
+}
+
+func (h *Crypt) Sha512() string {
+	hash := ParentSha512.New()
 	hash.Write([]byte(h.Str))
 	sum := hash.Sum(nil)
 	return hex.EncodeToString(sum)
@@ -55,17 +63,17 @@ func (h *Crypt) UrlBase64Decode() string {
 func (h *Crypt) BiuPwdNewBuilder(password string) (salt string, newPassword string) {
 	ConfigLib := new(Config)
 	UtilLib := new(Util)
-	salt = UtilLib.RandomStr(4)
-	h.Str = password + salt
-	h.Str = h.Sha256() + ConfigLib.Get("hex_key").String()
-	newPassword = h.Sha256()
+	salt = UtilLib.RandomStr(16)
+	h.Str = password
+	h.Str = h.Sha512() + ConfigLib.Get("hex_key").String() + salt
+	newPassword = h.Sha512()
 	return
 }
 
 func (h *Crypt) BiuPwdBuilder(salt string, password string) (newPassword string) {
 	ConfigLib := new(Config)
-	h.Str = password + salt
-	h.Str = h.Sha256() + ConfigLib.Get("hex_key").String()
-	newPassword = h.Sha256()
+	h.Str = password
+	h.Str = h.Sha512() + ConfigLib.Get("hex_key").String() + salt
+	newPassword = h.Sha512()
 	return
 }
