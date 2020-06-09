@@ -13,6 +13,7 @@
 [logrus](https://github.com/sirupsen/logrus) | v1.5.0 | 日志处理
 [viper](https://github.com/spf13/viper) | v1.6.3 | 配置文件获取，配置项读取，感觉用起来会有卡顿和偶发性的取key失败的问题，有更好的替代方案时考虑更换
 [go-swagger](https://github.com/go-swagger/go-swagger) | v0.23.0 | 因为当前版本只针对RESTFul所以swagger还是一个不错的工具
+[godaemon](https://github.com/icattlecoder/godaemon) | v0.0.0-20190426080617-f87981e709a1 | 以后台形式运行golang
 
 ## 结构
 ```
@@ -89,6 +90,8 @@ shell> cd word-game-go
 
 ## 运行项目
 shell> go run .
+## 后台运行
+shell> go run -d=true .
 
 ## 项目打包
 ## ...Linux or Mac OS:
@@ -96,10 +99,13 @@ shell> go build .
 ## 会在目录下生成一个名为wordgame的二进制文件
 ## 运行:
 shell> ./wordgame
+## 后台运行
+shell> ./wordgame -d=true
 ## ...Windows:
 shell> CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build .
 ## 会生成一个名为 wordgame.exe 的可执行文件
 ## 在Windows下双击即可运行
+
 ```
 > 本项目在windows下运行会报config找不到的问题，这是因为Linux和Windows下路径分隔符"/"和"\\"的问题。
 
