@@ -2,7 +2,7 @@
 app_name = "auth-service"
 
 # 服务端口 string
-app_port = "8001"
+app_port = "8002"
 
 # 加密混肴码 string
 hex_key = "1UgZfL<=Au3M9dQrcB7yzzd==8?xlZ:T3oP1id>jKWi4Bc9Kz<RbTSXqgPWJXxes945rzQ4ojlsqN25:95yb1-DsbAu1k6mUSs27CXDmQu-mx0lhH82-rA5=<NO0Z4:x"
