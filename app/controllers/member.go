@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"wordgame/app/services"
@@ -71,14 +70,27 @@ func (member *Member) Login() {
 	authorization := ""
 	ConfigLib := new(lib.Config)
 	HttpRequestLib := new(lib.HttpRequest)
+
+	// header
+	header := make(map[string]string)
+	header["Content-Type"] = "application/json"
+	header["Connection"] = "Keep-Alive"
+
+	// params
+	params := make(map[string]interface{})
+	params["method"] = "GET"
+	params["base_url"] = "auth_url"
+	params["action_url"] = "/auth/token"
 	body := make(map[string]interface{})
 	body["open_id"] = memberInfo["OpenId"]
-	HttpRequestLib.Method = "GET"
+	params["body"] = body
+
+	HttpRequestLib.Method = "POST"
+	HttpRequestLib.Header = header
 	HttpRequestLib.Url = ConfigLib.Get("api_url.gateway_url").String() + "/feign/http"
-	// HttpRequestLib.Params = body
+	HttpRequestLib.Params = params
 	httpCode, res, err := HttpRequestLib.BytesPost()
-	fmt.Println(httpCode, res, err)
-	if httpCode == http.StatusOK && err != nil {
+	if httpCode == http.StatusOK && err == nil {
 		resMap := make(map[string]interface{})
 		json.Unmarshal([]byte(res), &resMap)
 		authorization = resMap["authorization"].(string)
