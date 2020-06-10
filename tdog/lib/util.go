@@ -58,3 +58,11 @@ func (u *Util) RandomStr(length int) string {
 	}
 	return string(result)
 }
+
+// 判断map中是否存在某个key
+func (u *Util) InMap(key string, dataMap map[string]interface{}) bool {
+	if _, ok := dataMap[key]; ok {
+		return true
+	}
+	return false
+}
