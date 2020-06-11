@@ -69,13 +69,7 @@ func (member *Member) Login() {
 	}
 
 	authorization := ""
-	ConfigLib := new(lib.Config)
 	HttpRequestLib := new(lib.HttpRequest)
-
-	// header
-	header := make(map[string]string)
-	header["Content-Type"] = "application/json"
-	header["Connection"] = "Keep-Alive"
 
 	// params
 	params := make(map[string]interface{})
@@ -86,14 +80,11 @@ func (member *Member) Login() {
 	body["open_id"] = memberInfo["OpenId"]
 	params["body"] = body
 
-	HttpRequestLib.Method = "POST"
-	HttpRequestLib.Header = header
-	HttpRequestLib.Url = ConfigLib.Get("api_url.gateway_url").String() + "/feign/http"
 	HttpRequestLib.Params = params
-	httpCode, res, err := HttpRequestLib.BytesPost()
-	if httpCode == http.StatusOK && err == nil {
+	res, data := HttpRequestLib.ServicePost()
+	if res {
 		resMap := make(map[string]interface{})
-		json.Unmarshal([]byte(res), &resMap)
+		json.Unmarshal([]byte(data), &resMap)
 		authorization = resMap["authorization"].(string)
 	}
 
