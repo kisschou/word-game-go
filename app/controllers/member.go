@@ -59,6 +59,7 @@ func (member *Member) Login() {
 	}
 
 	MemberService := new(services.Member)
+	MemberService.IpAddr = member.Base.Req.IpAddr
 	memberInfo, err := MemberService.Login(username, password)
 	if err != nil {
 		member.Base.Res.JSON(http.StatusInternalServerError, core.H{

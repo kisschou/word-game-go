@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"reflect"
+	"time"
 
 	"wordgame/tdog/core"
 	"wordgame/tdog/lib"
@@ -10,7 +11,8 @@ import (
 
 type (
 	UserModel struct {
-		Base core.Model
+		Base   core.Model
+		IpAddr string
 	}
 
 	User struct {
@@ -49,9 +51,9 @@ type (
 		IdCardFront       int    `xorm:"not null default 0 comment('身份证正面图片ID') INT(10)"`
 		IdCardBack        int    `xorm:"not null default 0 comment('身份证背面图片ID') INT(10)"`
 		Login             int    `xorm:"not null default 0 comment('登录次数') INT(10)"`
-		RegIp             int64  `xorm:"not null default 0 comment('注册IP') BIGINT(20)"`
+		RegIp             string `xorm:"not null default 0 comment('注册IP') CHAR(40)"`
 		RegTime           int64  `xorm:"not null default 0 comment('注册时间') BIGINT(20)"`
-		LastLoginIp       int64  `xorm:"not null default 0 comment('最后登录IP') BIGINT(20)"`
+		LastLoginIp       string `xorm:"not null default 0 comment('最后登录IP') CHAR(40)"`
 		LastLoginTime     int64  `xorm:"not null default 0 comment('最后登录时间') BIGINT(20)"`
 		ForbiddenReason   string `xorm:"not null default '' comment('禁用原因') VARCHAR(255)"`
 		UpdateTime        int64  `xorm:"not null default 0 comment('更新时间') BIGINT(20)"`
@@ -69,7 +71,7 @@ func (user *User) ToMap() map[string]interface{} {
 	return mapVal
 }
 
-func (userModel *UserModel) Login(username string, password string) (userId int64, err error) {
+func (userModel *UserModel) Login(username string, password string) (memberInfo map[string]interface{}, err error) {
 	userInfo := new(User)
 	userModel.Base.Sql.NewEngine()
 	result, err := userModel.Base.Sql.Engine.Where("username=?", username).Get(userInfo)
@@ -86,8 +88,28 @@ func (userModel *UserModel) Login(username string, password string) (userId int6
 		err = errors.New("ERROR_LOGIN_PASSWORD")
 		return
 	}
-	userId = userInfo.Id
+
+	// update login info.
+	updateData := make(map[string]interface{})
+	updateData["login"] = userInfo.Login + 1
+	updateData["last_login_time"] = time.Now().Unix()
+	updateData["last_login_ip"] = userModel.IpAddr
+	userModel.UpdateInfo(userInfo.Id, updateData)
+
+	memberInfo = userInfo.ToMap()
 	return
+}
+
+func (userModel *UserModel) UpdateInfo(userId int64, updateData map[string]interface{}) bool {
+	_, err := userModel.Base.Sql.Engine.Table(new(User)).ID(userId).Update(updateData)
+	if err != nil {
+		LoggerLib := new(lib.Logger)
+		LoggerLib.Level = 0
+		LoggerLib.Key = "error"
+		LoggerLib.New(err.Error())
+		return false
+	}
+	return true
 }
 
 func (userModel *UserModel) GetInfo(userId int64) (memberInfo map[string]interface{}, err error) {
