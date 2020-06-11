@@ -2,12 +2,14 @@ package core
 
 import (
 	"encoding/json"
+	"net"
 	"reflect"
 	"strings"
 )
 
 type (
 	Request struct {
+		IpAddr  string
 		Header  map[string][]string
 		Params  map[string][]string
 		Get     map[string][]string
@@ -60,6 +62,9 @@ func (r *Request) New(c *Context) {
 			r.Post = ghostMap
 		}
 	}
+
+	// 获取客户端ip地址
+	r = getIpAddr(r, c)
 
 	// 判断请求类型
 	r = checkReqMethod(r, c.Req.Method)
@@ -118,5 +123,29 @@ func merge2Params(r *Request) *Request {
 		}
 	}
 	r.Params = params
+	return r
+}
+
+func getIpAddr(r *Request, c *Context) *Request {
+	ip := ""
+
+	ip = strings.TrimSpace(strings.Split(c.Req.Header.Get("X-Forwarded-For"), ",")[0])
+
+	if ip == "" {
+		ip = strings.TrimSpace(c.Req.Header.Get("X-Real-Ip"))
+	}
+
+	if ip == "" {
+		var err error
+		if ip, _, err = net.SplitHostPort(strings.TrimSpace(c.Req.RemoteAddr)); err != nil {
+			ip = ""
+		}
+	}
+
+	if ip == "::1" {
+		ip = "127.0.0.1"
+	}
+
+	r.IpAddr = ip
 	return r
 }
