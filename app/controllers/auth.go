@@ -189,7 +189,7 @@ func (auth *Auth) GetKey() {
 //   401: errMsg
 func (auth *Auth) GetAllKeys() {
 	JwtCore := new(core.Jwt)
-	authorization := auth.Base.Req.Params["authorization"][0]
+	authorization := auth.Base.Req.Header["Authorization"][0]
 	auth.Base.Res.JSON(http.StatusOK, core.H{
 		"message": "获取成功",
 		"data":    JwtCore.GetData(authorization),
