@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"reflect"
 
 	"wordgame/tdog/lib"
 )
@@ -47,14 +48,24 @@ func (feign *Feign) Decoder(data string) *Feign {
 	}
 	headerMap := make(map[string]string)
 	if UtilLib.InMap("header", dataMap) {
-		CryptLib.Str = dataMap["header"].(string)
-		json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &headerMap)
+		if reflect.TypeOf(dataMap["header"]).Kind().String() == "map" {
+			for k, v := range dataMap["header"].(map[string]interface{}) {
+				headerMap[k] = v.(string)
+			}
+		} else {
+			CryptLib.Str = dataMap["header"].(string)
+			json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &headerMap)
+		}
 	}
 	feign.Header = headerMap
 	bodyMap := make(map[string]interface{})
 	if UtilLib.InMap("body", dataMap) {
-		CryptLib.Str = dataMap["body"].(string)
-		json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &bodyMap)
+		if reflect.TypeOf(dataMap["body"]).Kind().String() == "map" {
+			bodyMap = dataMap["body"].(map[string]interface{})
+		} else {
+			CryptLib.Str = dataMap["body"].(string)
+			json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &bodyMap)
+		}
 	}
 	feign.Body = bodyMap
 
