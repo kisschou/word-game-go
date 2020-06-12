@@ -49,7 +49,9 @@ func (feign *Feign) Decoder(data string) *Feign {
 	headerMap := make(map[string]string)
 	if UtilLib.InMap("header", dataMap) {
 		if reflect.TypeOf(dataMap["header"]).Kind().String() == "map" {
-			headerMap = dataMap["header"].(map[string]string)
+			for k, v := range dataMap["header"].(map[string]interface{}) {
+				headerMap[k] = v.(string)
+			}
 		} else {
 			CryptLib.Str = dataMap["header"].(string)
 			json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &headerMap)
