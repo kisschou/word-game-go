@@ -145,9 +145,11 @@ func (hp *HttpRequest) ServicePost() (bool, string) {
 	hp.Url = ConfigLib.Get("api_url.gateway_url").String() + "/feign/http"
 	httpCode, res, err := hp.BytesPost()
 	if httpCode != http.StatusOK || err != nil {
-		logger := Logger{Level: 0, Key: "error"}
-		logger.New(err.Error())
-		return false, ""
+		if err != nil {
+			logger := Logger{Level: 0, Key: "error"}
+			logger.New(err.Error())
+		}
+		return false, res
 	}
 	return true, res
 }
