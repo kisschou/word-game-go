@@ -156,7 +156,7 @@ func (auth *Auth) VerifyLogin() {
 //   401: errMsg
 func (auth *Auth) GetKey() {
 	JwtCore := new(core.Jwt)
-	authorization := auth.Base.Req.Params["authorization"][0]
+	authorization := auth.Base.Req.Header["Authorization"][0]
 	key := ""
 	value := ""
 	if _, ok := auth.Base.Req.Params["key"]; ok {
