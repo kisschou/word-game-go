@@ -76,8 +76,14 @@ func (member *Member) Login() {
 	params["method"] = "GET"
 	params["base_url"] = "auth_url"
 	params["action_url"] = "/auth/token"
+	header := make(map[string]string)
+	header["Content-Type"] = "application/json"
+	header["Connection"] = "keep-alive"
+	params["header"] = header
 	body := make(map[string]interface{})
-	body["open_id"] = memberInfo["OpenId"]
+	bodyParams := make(map[string]interface{})
+	bodyParams["open_id"] = memberInfo["OpenId"]
+	body["data"] = bodyParams
 	params["body"] = body
 
 	HttpRequestLib.Params = params
