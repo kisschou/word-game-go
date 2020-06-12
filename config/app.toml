@@ -9,7 +9,7 @@ hex_key = "1UgZfL<=Au3M9dQrcB7yzzd==8?xlZ:T3oP1id>jKWi4Bc9Kz<RbTSXqgPWJXxes945rz
 
 # 是否开启验签 bool
 # 如果关闭了验签同时也关闭了登录验证
-is_auth = false
+is_auth = true
 
 # 略过验签的路由 []string
 ignore_auth = ["/auth/getToken"]
