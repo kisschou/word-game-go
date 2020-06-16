@@ -18,9 +18,6 @@ type (
 	}
 )
 
-func cacheToRedis() {
-}
-
 func (member *Member) Login(username string, password string) (memberInfo MemberInfo, err error) {
 	UserModel := new(models.UserModel)
 	UserModel.IpAddr = member.IpAddr
@@ -88,4 +85,10 @@ func (member *Member) GetIdByOpenId(openId string) (userId int64) {
 	UserModel := new(models.UserModel)
 	userId = UserModel.GetIdByOpenId(openId)
 	return
+}
+
+func (member *Member) Register() {
+}
+
+func (member *Member) UpdateInfo() {
 }
