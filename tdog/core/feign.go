@@ -32,20 +32,20 @@ func (feign *Feign) Decoder(data string) *Feign {
 		LoggerLib.New(err.Error())
 	}
 
+	ConfigLib := new(lib.Config)
 	CryptLib := new(lib.Crypt)
 	UtilLib := new(lib.Util)
-	feign.Method = ""
-	if UtilLib.InMap("method", dataMap) {
-		feign.Method = dataMap["method"].(string)
+
+	if !UtilLib.InMap("api_key", dataMap) {
+		return feign
 	}
-	feign.BaseUrl = ""
-	if UtilLib.InMap("base_url", dataMap) {
-		feign.BaseUrl = dataMap["base_url"].(string)
-	}
-	feign.ActionUrl = ""
-	if UtilLib.InMap("action_url", dataMap) {
-		feign.ActionUrl = dataMap["action_url"].(string)
-	}
+
+	apiInfo := ConfigLib.Get("api_map." + dataMap["api_key"].(string)).StringSlice()
+
+	feign.Method = apiInfo[0]
+	feign.BaseUrl = apiInfo[1]
+	feign.ActionUrl = apiInfo[2]
+
 	headerMap := make(map[string]string)
 	if UtilLib.InMap("header", dataMap) {
 		if reflect.TypeOf(dataMap["header"]).Kind().String() == "map" {
