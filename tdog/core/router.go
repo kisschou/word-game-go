@@ -1,6 +1,7 @@
 package core
 
 import (
+	"encoding/json"
 	"net/http"
 	"path"
 	"strings"
@@ -190,34 +191,70 @@ func (c *Context) Next() {
 
 	// 开始鉴权
 	if isAuth {
-		jwt := new(Jwt)
 		authorization := ""
 		if _, ok := c.BaseController.Req.Header["Authorization"]; ok {
 			if len(c.BaseController.Req.Header["Authorization"]) > 0 {
 				authorization = c.BaseController.Req.Header["Authorization"][0]
 			}
 		}
-		if len(authorization) < 1 || !jwt.Check(authorization) {
+
+		if len(authorization) < 1 {
 			c.BaseController.Res.JSON(http.StatusUnauthorized, H{
 				"code": "ERROR_UNAUTHOZED",
 			})
 			return
 		}
 
+		HttpRequestLib := new(lib.HttpRequest)
+		params := make(map[string]interface{})
+		params["api_key"] = "api_1003"
+		header := make(map[string]string)
+		header["Content-Type"] = "application/json"
+		header["Connection"] = "keep-alive"
+		params["header"] = header
+		body := make(map[string]interface{})
+		body["authorization"] = authorization
+		params["body"] = body
+		HttpRequestLib.Params = params
+		res, data := HttpRequestLib.ServicePost()
+		if !res {
+			c.BaseController.Res.String(http.StatusUnauthorized, data)
+			return
+		}
+
 		// 开始登录校验
 		if isLogin {
-			// 验签通过获取用户open_id
-			openId := ""
-			if jwt.Get(authorization, "open_id") != nil {
-				openId = jwt.Get(authorization, "open_id").(string)
-			}
-			if len(openId) < 1 {
-				c.BaseController.Res.JSON(http.StatusInternalServerError, H{
-					"code": "ERROR_UNLOGIN",
-				})
+			params := make(map[string]interface{})
+			params["api_key"] = "api_1004"
+			header := make(map[string]string)
+			header["Authorization"] = authorization
+			params["header"] = header
+			params["body"] = make(map[string]interface{})
+			HttpRequestLib.Params = params
+			res, data = HttpRequestLib.ServicePost()
+			if !res {
+				c.BaseController.Res.String(http.StatusUnauthorized, data)
 				return
 			}
-			c.BaseController.OpenId = openId
+
+			// 通过登陆校验，获取用户openId
+			params = make(map[string]interface{})
+			params["api_key"] = "api_1005"
+			header = make(map[string]string)
+			header["Authorization"] = authorization
+			header["Content-Type"] = "application/json"
+			header["Connection"] = "keep-alive"
+			params["header"] = header
+			body = make(map[string]interface{})
+			body["key"] = "open_id"
+			params["body"] = body
+			HttpRequestLib.Params = params
+			res, data = HttpRequestLib.ServicePost()
+			if res {
+				resMap := make(map[string]interface{})
+				json.Unmarshal([]byte(data), &resMap)
+				c.BaseController.OpenId = resMap["value"].(string)
+			}
 		}
 	}
 
