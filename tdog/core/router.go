@@ -207,9 +207,7 @@ func (c *Context) Next() {
 
 		HttpRequestLib := new(lib.HttpRequest)
 		params := make(map[string]interface{})
-		params["method"] = "POST"
-		params["base_url"] = "auth_url"
-		params["action_url"] = "/auth/verify"
+		params["api_key"] = "api_1003"
 		header := make(map[string]string)
 		header["Content-Type"] = "application/json"
 		header["Connection"] = "keep-alive"
@@ -227,9 +225,7 @@ func (c *Context) Next() {
 		// 开始登录校验
 		if isLogin {
 			params := make(map[string]interface{})
-			params["method"] = "POST"
-			params["base_url"] = "auth_url"
-			params["action_url"] = "/auth/verifyLogin"
+			params["api_key"] = "api_1004"
 			header := make(map[string]string)
 			header["Authorization"] = authorization
 			params["header"] = header
@@ -243,9 +239,7 @@ func (c *Context) Next() {
 
 			// 通过登陆校验，获取用户openId
 			params = make(map[string]interface{})
-			params["method"] = "POST"
-			params["base_url"] = "auth_url"
-			params["action_url"] = "/auth/getKey"
+			params["api_key"] = "api_1005"
 			header = make(map[string]string)
 			header["Authorization"] = authorization
 			header["Content-Type"] = "application/json"
