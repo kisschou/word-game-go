@@ -29,6 +29,7 @@ func InitRouter() *core.HttpEngine {
 	feignRouter := r.Group("/feign", &FeignController.Base)
 	{
 		feignRouter.POST("/http", FeignController.Http)
+		feignRouter.GET("/ping", FeignController.Ping)
 	}
 
 	return r

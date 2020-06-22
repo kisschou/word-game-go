@@ -27,3 +27,7 @@ func (feign *Feign) Http() {
 
 	feign.Base.Res.String(code, res)
 }
+
+func (feign *Feign) Ping() {
+	feign.Base.Res.String(http.StatusOK, "Pong~")
+}
