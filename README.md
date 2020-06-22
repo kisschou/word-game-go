@@ -7,7 +7,7 @@
 ## 使用说明
 服务核心脚本位于`wordgame/tdog/core/feign.go`, 实现了请求请求体拆解和转发(通过`wordgame/tdog/lib/http_request.go`)的简单功能。
 
-#### 调用规则
+#### 服务启动
 脚本 | 说明
 -- | --
 `wordgame/tdog/core/feign.go` | 核心方法实现
@@ -69,6 +69,32 @@ shell> ./gateway-service # Run
 shell> ./gateway-service -d=true # Run in background
 ```
 > 本项目在windows下运行会报config找不到的问题，这是因为Linux和Windows下路径分隔符"/"和"\\"的问题。
+
+#### 服务请求规则
+请求走的也是restful请求，验签之类的问题跟框架内的方式一致不详述。请求体为 `json` 格式, 共包含 `api_key`、`header`、`body` 三个部分。
+
+参数 | 说明 | 类型
+-- | -- | --
+api_key | 请求接口编号 | string
+header | 请求头部 | json
+body | 请求体 | json
+
+```
+## 示例:
+## 请求登陆接口
+POST {:IP}:{:PORT}/feign/http
+BODY {
+    "api_key": "api_2001",
+    "header": {
+        "Content-Type": "application/json",
+        "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cGUiOiJKV1QifQ==.eyJkYXRhIjp7Im9wZW5faWQiOiJzZUd4TGNodXJRcUJzWENHIn0sImV4cCI6NzIwMCwiaXRhIjoxNTkxOTUwMjc5fQ==.756dffe3d786cfc9df042377accaf3b7ebe45fadcd1c9262226b944d71c9e69c"
+    },
+    "body": {
+        "username": "admin",
+        "password": "111111"
+    }
+}
+```
 
 ## 其他
 Kisschou&copy;2020.All Rights.
