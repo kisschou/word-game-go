@@ -3,7 +3,9 @@ package core
 import (
 	"encoding/json"
 	"encoding/xml"
+	"html/template"
 	"net/http"
+	"os"
 )
 
 type (
@@ -64,4 +66,10 @@ func (r *Response) String(code int, msg string) {
 func (r *Response) Data(code int, data []byte) {
 	r.context.Writer.WriteHeader(code)
 	r.context.Writer.Write(data)
+}
+
+func (r *Response) Html(data interface{}) {
+	path, _ := os.Getwd()
+	t, _ := template.ParseFiles(path + "/app/views/" + r.context.Req.RequestURI + ".tpl")
+	t.Execute(r.context.Writer, data)
 }

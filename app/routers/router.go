@@ -31,5 +31,11 @@ func InitRouter() *core.HttpEngine {
 		feignRouter.POST("/http", FeignController.Http)
 	}
 
+	var DemoController controllers.Demo
+	demoRouter := r.Group("/demo", &DemoController.Base)
+	{
+		demoRouter.GET("hello", DemoController.Hello)
+	}
+
 	return r
 }
