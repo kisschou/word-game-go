@@ -246,14 +246,14 @@ func (c *Context) Next() {
 			header["Connection"] = "keep-alive"
 			params["header"] = header
 			body = make(map[string]interface{})
-			body["key"] = "open_id"
+			body["key"] = "user_id"
 			params["body"] = body
 			HttpRequestLib.Params = params
 			res, data = HttpRequestLib.ServicePost()
 			if res {
 				resMap := make(map[string]interface{})
 				json.Unmarshal([]byte(data), &resMap)
-				c.BaseController.OpenId = resMap["value"].(string)
+				c.BaseController.UserId = resMap["value"].(string)
 			}
 		}
 	}
