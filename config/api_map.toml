@@ -39,4 +39,4 @@ api_2004 = ["POST", "user_url", "/member/updateInfo"]
 
 # 日志服务
 
-# 对象存储服务
+# 文件存储服务
