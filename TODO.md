@@ -16,7 +16,7 @@
 6. 调试工具 - doctool
 7. 网关服务 - feature_kisschou_feign
 8. 许可服务 (鉴权子服务) - permission_service
-9. 对象存储服务 - oss_service
+9. 文件存储服务 - feature_kisschou_file
 
 继续做:
 so many..
