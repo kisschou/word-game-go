@@ -18,6 +18,9 @@ func InitRouter() *core.HttpEngine {
 		memberRouter.POST("/info", MemberController.GetInfo)
 		memberRouter.POST("/register", MemberController.Register)
 		memberRouter.POST("/updateInfo", MemberController.UpdateInfo)
+		memberRouter.POST("/changePassword", MemberController.ChangePassword)
+		memberRouter.POST("/resetPassword", MemberController.ResetPassword)
+		memberRouter.POST("/initPassword", MemberController.InitPassword)
 		memberRouter.GET("/ping", MemberController.Ping)
 	}
 
