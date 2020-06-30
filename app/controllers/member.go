@@ -172,15 +172,162 @@ func (member *Member) Register() {
 //   description: 授权信息
 //   type: string
 //   required: true
-// - name: open_id
+// - name: avatar_id
 //   in: body
-//   description: 用户openid
+//   description: 头像id
+//   type: string
+//   required: false
+// - name: email
+//   in: body
+//   description: 邮箱
+//   type: string
+//   required: false
+// - name: phone
+//   in: body
+//   description: 手机号码
+//   type: string
+//   required: false
+// - name: nick_name
+//   in: body
+//   description: 昵称
+//   type: string
+//   required: false
+// - name: sex
+//   in: body
+//   description: 性别
 //   type: string
 //   required: false
 // responses:
 //   200: repoResp
 //   401: errMsg
 func (member *Member) UpdateInfo() {
+	userId := member.Base.UserId
+	updateInfo := make(map[string]interface{})
+	if _, ok := member.Base.Req.Params["avatar_id"]; ok {
+		if len(member.Base.Req.Params["avatar_id"]) > 0 {
+			updateInfo["avatar_id"] = member.Base.Req.Params["avatar_id"][0]
+		}
+	}
+	if _, ok := member.Base.Req.Params["email"]; ok {
+		if len(member.Base.Req.Params["email"]) > 0 {
+			updateInfo["email"] = member.Base.Req.Params["email"][0]
+		}
+	}
+	if _, ok := member.Base.Req.Params["phone"]; ok {
+		if len(member.Base.Req.Params["phone"]) > 0 {
+			updateInfo["phone"] = member.Base.Req.Params["phone"][0]
+		}
+	}
+	if _, ok := member.Base.Req.Params["nick_name"]; ok {
+		if len(member.Base.Req.Params["nick_name"]) > 0 {
+			updateInfo["nick_name"] = member.Base.Req.Params["nick_name"][0]
+		}
+	}
+	if _, ok := member.Base.Req.Params["sex"]; ok {
+		if len(member.Base.Req.Params["sex"]) > 0 {
+			updateInfo["sex"] = member.Base.Req.Params["sex"][0]
+		}
+	}
+
+	if len(updateInfo) < 1 {
+		member.Base.Res.JSON(http.StatusInternalServerError, core.H{
+			"code": "ERROR_REQUEST_PARAMS",
+		})
+		return
+	}
+
+	MemberService := new(services.Member)
+	if !MemberService.UpdateInfo(userId, updateInfo) {
+		member.Base.Res.JSON(http.StatusInternalServerError, core.H{
+			"code": "ERROR_USER_UPDATE_FAIL",
+		})
+		return
+	}
+
+	member.Base.Res.JSON(http.StatusOK, core.H{
+		"message": "success",
+	})
+}
+
+// swagger:operation POST /member/changePassword member changePassword
+// ---
+// summary: 修改密码
+// description: 修改密码
+// parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: true
+// - name: password
+//   in: body
+//   description: 新密码
+//   type: string
+//   required: true
+// responses:
+//   200: repoResp
+//   401: errMsg
+func (member *Member) ChangePassword() {
+	// userId := member.Base.UserId
+	password := ""
+	if _, ok := member.Base.Req.Params["password"]; ok {
+		if len(member.Base.Req.Params["password"]) > 0 {
+			password = member.Base.Req.Params["password"][0]
+		}
+	}
+
+	if len(password) < 6 {
+		member.Base.Res.JSON(http.StatusInternalServerError, core.H{
+			"code": "ERROR_REQUEST_PARAMS",
+		})
+		return
+	}
+
+	member.Base.Res.JSON(http.StatusOK, core.H{
+		"message": "success",
+	})
+}
+
+// swagger:operation POST /member/resetPassword member resetPassword
+// ---
+// summary: 重设密码-忘记密码
+// description: 重设密码-忘记密码
+// parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: false
+// - name: password
+//   in: body
+//   description: 新密码
+//   type: string
+//   required: true
+// responses:
+//   200: repoResp
+//   401: errMsg
+func (member *Member) ResetPassword() {
+}
+
+// swagger:operation POST /member/initPassword member initPassword
+// ---
+// summary: 初始化密码
+// description: 初始化密码
+// parameters:
+// - name: Authorization
+//   in: header
+//   description: 授权信息
+//   type: string
+//   required: true
+// - name: password
+//   in: body
+//   description: 新密码
+//   type: string
+//   required: true
+// responses:
+//   200: repoResp
+//   401: errMsg
+func (member *Member) InitPassword() {
 }
 
 // swagger:operation POST /member/info member info
@@ -205,13 +352,16 @@ func (member *Member) GetInfo() {
 	userId := member.Base.UserId
 	if _, ok := member.Base.Req.Params["user_id"]; ok {
 		if len(member.Base.Req.Params["user_id"]) > 0 {
-			userId = member.Base.Req.Params["user_id"][0]
+			var err error
+			userId, err = strconv.ParseInt(member.Base.Req.Params["user_id"][0], 10, 64)
+			if err != nil {
+				userId = member.Base.UserId
+			}
 		}
 	}
 
 	MemberService := new(services.Member)
-	userIdInt64, _ := strconv.ParseInt(userId, 10, 64)
-	memberInfo := MemberService.GetInfo(userIdInt64)
+	memberInfo := MemberService.GetInfo(userId)
 
 	member.Base.Res.JSON(http.StatusOK, core.H{
 		"message": memberInfo,

@@ -81,5 +81,28 @@ func (member *Member) Register(username, password string) (err error) {
 	return
 }
 
-func (member *Member) UpdateInfo() {
+func (member *Member) UpdateInfo(userId int64, updateData map[string]interface{}) bool {
+	UserModel := new(models.UserModel)
+
+	if UserModel.UpdateInfo(userId, updateData) {
+		// 获取更新后的用户数据
+		memberInfo, _ := UserModel.GetInfo(userId)
+
+		// cache to redis.
+		member.Base.Redis.NewEngine()
+		userId := memberInfo["Id"]
+		key := fmt.Sprintf("user:info:%x", userId)
+		delete(memberInfo, "Password")
+		delete(memberInfo, "Salt")
+		if member.Base.Redis.Engine.Exists(key).Val() > 0 {
+			member.Base.Redis.Engine.Del(key)
+		}
+		for k, v := range memberInfo {
+			member.Base.Redis.Engine.HSet(key, k, v)
+		}
+
+		return true
+	}
+
+	return false
 }

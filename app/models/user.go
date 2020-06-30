@@ -20,9 +20,9 @@ type (
 		Id                    int64     `xorm:"pk comment('ID') BIGINT(20)"`
 		AvatarId              int64     `xorm:"comment('头像') index BIGINT(20)"`
 		Email                 string    `xorm:"comment('邮箱') unique VARCHAR(255)"`
-		Enabled               int64     `xorm:"comment('状态：1启用、0禁用') BIGINT(20)"`
+		Enabled               int       `xorm:"comment('状态：1启用、0禁用') TINYINT(1)"`
 		Password              string    `xorm:"comment('密码') VARCHAR(255)"`
-		Salt                  string    `xorm:"comment('密码加盐') VARCHAR(4)"`
+		Salt                  string    `xorm:"comment('密码加盐') VARCHAR(16)"`
 		Username              string    `xorm:"comment('用户名') unique VARCHAR(255)"`
 		DeptId                int64     `xorm:"comment('部门名称') index BIGINT(20)"`
 		Phone                 string    `xorm:"comment('手机号码') VARCHAR(255)"`
@@ -70,7 +70,7 @@ func (userModel *UserModel) Login(username string, password string) (memberInfo 
 
 	if !result || userInfo.Enabled != 1 {
 		userInfo = nil
-		err = errors.New("ERROR_LOGIN_LOCKED")
+		err = errors.New("ERROR_USER_LOGIN_LOCKED")
 		return
 	}
 
@@ -78,7 +78,7 @@ func (userModel *UserModel) Login(username string, password string) (memberInfo 
 	password = CryptLib.BiuPwdBuilder(userInfo.Salt, password)
 	if password != userInfo.Password {
 		userInfo = nil
-		err = errors.New("ERROR_LOGIN_PASSWORD")
+		err = errors.New("ERROR_USER_LOGIN_PASSWORD")
 		return
 	}
 
@@ -112,7 +112,7 @@ func (userModel *UserModel) GetInfo(userId int64) (memberInfo map[string]interfa
 	userModel.Base.Sql.NewEngine()
 	result, err := userModel.Base.Sql.Engine.Where("id=?", userId).Get(userInfo)
 	if !result {
-		err = errors.New("ERROR_LOGIN_MISSING")
+		err = errors.New("ERROR_USER_LOGIN_MISSING")
 		return
 	}
 	memberInfo = userInfo.ToMap()
@@ -133,21 +133,21 @@ func (userModel *UserModel) Register(username, password string) (err error) {
 	if strType == 0 {
 		result, err = userModel.Base.Sql.Engine.Where("username=?", username).Count(userInfo)
 		addInfo.Username = username
-		err = errors.New("ERROR_USERNAME_EXISTS")
+		err = errors.New("ERROR_USER_USERNAME_EXISTS")
 	}
 
 	// 邮箱登入
 	if strType == 1 {
 		result, err = userModel.Base.Sql.Engine.Where("email=?", username).Count(userInfo)
 		addInfo.Email = username
-		err = errors.New("ERROR_EMAIL_EXISTS")
+		err = errors.New("ERROR_USER_EMAIL_EXISTS")
 	}
 
 	// 手机号登入
 	if strType == 2 {
 		result, err = userModel.Base.Sql.Engine.Where("phone=?", username).Count(userInfo)
 		addInfo.Phone = username
-		err = errors.New("ERROR_PHONE_EXISTS")
+		err = errors.New("ERROR_USER_PHONE_EXISTS")
 	}
 
 	if result > 0 {
@@ -161,6 +161,9 @@ func (userModel *UserModel) Register(username, password string) (err error) {
 	SnowFlakeLib.LastTimeStamp = time.Now().UnixNano() / 1000000
 	userId := SnowFlakeLib.New()
 	addInfo.Id = userId
+
+	// 默认头像
+	addInfo.AvatarId = 6684432467793088512
 
 	// 获取salt和新password
 	CryptLib := new(lib.Crypt)
