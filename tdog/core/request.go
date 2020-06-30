@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"mime/multipart"
 	"net"
 	"reflect"
 	"strings"
@@ -15,12 +16,20 @@ type (
 		Get     map[string][]string
 		Post    map[string][]string
 		Put     map[string]interface{}
+		File    *RequestFile
 		IsGet   bool
 		IsPost  bool
 		IsPut   bool
 		IsOpt   bool
 		IsDel   bool
 		IsPatch bool
+	}
+
+	RequestFile struct {
+		Filename string
+		Header   map[string][]string
+		Size     int64
+		Body     multipart.File
 	}
 )
 
@@ -55,6 +64,18 @@ func (r *Request) New(c *Context) {
 		}
 
 		if strings.Contains(c.Req.Header["Content-Type"][0], "form-data") {
+			fileBody, fileHeader, err := c.Req.FormFile("file")
+			if err == nil {
+				defer fileBody.Close()
+
+				requestFile := new(RequestFile)
+				requestFile.Filename = fileHeader.Filename
+				requestFile.Header = fileHeader.Header
+				requestFile.Size = fileHeader.Size
+				requestFile.Body = fileBody
+				r.File = requestFile
+			}
+
 			ghostMap = make(map[string][]string)
 			for k, v := range c.Req.PostForm {
 				ghostMap[k] = v
