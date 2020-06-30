@@ -10,7 +10,7 @@ type (
 	Controller struct {
 		Req    *Request
 		Res    *Response
-		UserId string
+		UserId int64
 	}
 )
 
