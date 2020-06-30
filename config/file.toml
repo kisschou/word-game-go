@@ -1,0 +1,5 @@
+## 文件请求地址
+file_request_url = "http://127.0.0.1:8080"
+
+## 文件存储位置(基础目录)
+file_save_path = "/usr/local/var/www/"
