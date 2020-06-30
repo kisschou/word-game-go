@@ -15,7 +15,7 @@ user = "root" # 用户
 pass = "root" # 密码
 db = "biuadmin_file" # 数据库
 charset = "utf8mb4" # 字符集
-prefix = "file_" # 表前缀
+prefix = "" # 表前缀
 
 # 从库 按需
 [slave]
