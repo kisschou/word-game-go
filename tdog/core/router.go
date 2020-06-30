@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
@@ -246,14 +247,22 @@ func (c *Context) Next() {
 			header["Connection"] = "keep-alive"
 			params["header"] = header
 			body = make(map[string]interface{})
-			body["key"] = "open_id"
+			body["key"] = "user_id"
 			params["body"] = body
 			HttpRequestLib.Params = params
 			res, data = HttpRequestLib.ServicePost()
 			if res {
+				var err error
 				resMap := make(map[string]interface{})
 				json.Unmarshal([]byte(data), &resMap)
-				c.BaseController.OpenId = resMap["value"].(string)
+				userId, err := strconv.ParseInt(resMap["value"].(string), 10, 64)
+				if err != nil {
+					c.BaseController.Res.JSON(http.StatusInternalServerError, H{
+						"code": "ERROR_UNLOGIN",
+					})
+					return
+				}
+				c.BaseController.UserId = userId
 			}
 		}
 	}

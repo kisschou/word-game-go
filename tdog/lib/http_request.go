@@ -130,3 +130,26 @@ func (hp *HttpRequest) BytesPost() (int, string, error) {
 
 	return resp.StatusCode, string(b), err
 }
+
+// 针对请求网关服务构建
+// 继承后只需要set结构体中的Params
+func (hp *HttpRequest) ServicePost() (bool, string) {
+	ConfigLib := new(Config)
+	// header
+	header := make(map[string]string)
+	header["Content-Type"] = "application/json"
+	header["Connection"] = "Keep-Alive"
+
+	hp.Method = "POST"
+	hp.Header = header
+	hp.Url = ConfigLib.Get("api_url.gateway_url").String() + "/feign/http"
+	httpCode, res, err := hp.BytesPost()
+	if httpCode != http.StatusOK || err != nil {
+		if err != nil {
+			logger := Logger{Level: 0, Key: "error"}
+			logger.New(err.Error())
+		}
+		return false, res
+	}
+	return true, res
+}

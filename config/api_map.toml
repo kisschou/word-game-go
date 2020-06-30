@@ -1,0 +1,48 @@
+# 说明
+# API_KEY = [METHOD, BASE_URL, ACTION_URL]
+# 接口标识 = [请求方式, 请求地址名, 请求路径]
+
+# 网关服务
+## 请求网关服务
+api_0000 = ["GET", "gateway_url", "/feign/ping"]
+api_0001 = ["POST", "gateway_url", "/feign/http"]
+
+# 验签服务
+## 获取token
+api_1001 = ["GET", "auth_url", "/auth/token"]
+## 刷新token
+api_1002 = ["GET", "auth_url", "/auth/refresh"]
+## token校验
+api_1003 = ["POST", "auth_url", "/auth/verify"]
+## 登录校验
+api_1004 = ["POST", "auth_url", "/auth/verifyLogin"]
+## 获取指定参数
+api_1005 = ["POST", "auth_url", "/auth/getKey"]
+## 获取所有参数
+api_1006 = ["POST", "auth_url", "/auth/getAllKeys"]
+
+# 许可服务 (鉴权子服务)
+
+# 用户服务
+## 登入
+api_2001 = ["POST", "user_url", "/member/login"]
+## 获取用户信息
+api_2002 = ["POST", "user_url", "/member/info"]
+## 注册
+api_2003 = ["POST", "user_url", "/member/register"]
+## 更新用户信息
+api_2004 = ["POST", "user_url", "/member/updateInfo"]
+## 修改密码
+api_2005 = ["POST", "user_url", "/member/changePassword"]
+## 重设密码-忘记密码
+api_2006 = ["POST", "user_url", "/member/resetPassword"]
+## 初始化密码
+api_2007 = ["POST", "user_url", "/member/initPassword"]
+
+# 验证码服务地址
+
+# 短信服务
+
+# 日志服务
+
+# 文件存储服务

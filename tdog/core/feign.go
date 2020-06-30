@@ -2,7 +2,7 @@ package core
 
 import (
 	"encoding/json"
-	"net/http"
+	"reflect"
 
 	"wordgame/tdog/lib"
 )
@@ -32,17 +32,41 @@ func (feign *Feign) Decoder(data string) *Feign {
 		LoggerLib.New(err.Error())
 	}
 
+	ConfigLib := new(lib.Config)
 	CryptLib := new(lib.Crypt)
-	feign.Method = dataMap["method"].(string)
-	feign.BaseUrl = dataMap["base_url"].(string)
-	feign.ActionUrl = dataMap["action_url"].(string)
+	UtilLib := new(lib.Util)
+
+	if !UtilLib.InMap("api_key", dataMap) {
+		return feign
+	}
+
+	apiInfo := ConfigLib.Get("api_map." + dataMap["api_key"].(string)).StringSlice()
+
+	feign.Method = apiInfo[0]
+	feign.BaseUrl = apiInfo[1]
+	feign.ActionUrl = apiInfo[2]
+
 	headerMap := make(map[string]string)
-	CryptLib.Str = dataMap["header"].(string)
-	json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &headerMap)
+	if UtilLib.InMap("header", dataMap) {
+		if reflect.TypeOf(dataMap["header"]).Kind().String() == "map" {
+			for k, v := range dataMap["header"].(map[string]interface{}) {
+				headerMap[k] = v.(string)
+			}
+		} else {
+			CryptLib.Str = dataMap["header"].(string)
+			json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &headerMap)
+		}
+	}
 	feign.Header = headerMap
 	bodyMap := make(map[string]interface{})
-	CryptLib.Str = dataMap["body"].(string)
-	json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &bodyMap)
+	if UtilLib.InMap("body", dataMap) {
+		if reflect.TypeOf(dataMap["body"]).Kind().String() == "map" {
+			bodyMap = dataMap["body"].(map[string]interface{})
+		} else {
+			CryptLib.Str = dataMap["body"].(string)
+			json.Unmarshal([]byte(CryptLib.UrlBase64Decode()), &bodyMap)
+		}
+	}
 	feign.Body = bodyMap
 
 	return feign
@@ -54,7 +78,7 @@ func (feign *Feign) Target() (code int, res string) {
 
 	// 请求服务不存在
 	if !ConfigLib.Get("api_url." + feign.BaseUrl).IsExists() {
-		code = http.StatusInternalServerError
+		code = 0
 		res = "ERROR_FEIGN_SERVICE_MISSING"
 		return
 	}
