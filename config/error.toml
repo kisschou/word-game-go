@@ -14,3 +14,9 @@ ERROR_PHONE_EXISTS = "手机号已经存在!"
 # Feign模块
 ERROR_FEIGN_SERVICE_MISSING = "请求的服务不存在!"
 ERROR_FEIGN_REQUEST_FAIL = "请求失败!"
+
+# File模块
+ERROR_FILE_EXISTS = "该资源已经存在!"
+ERROR_FILE_ADD_FAIL = "资源入库失败!"
+ERROR_FILE_UPDATE_FAIL = "资源信息更新失败!"
+ERROR_FILE_MISSING = "未找到相关的资源文件!"

@@ -71,6 +71,15 @@ func (u *Util) InMap(key string, dataMap map[string]interface{}) bool {
 	return false
 }
 
+func (u *Util) InStringSlice(key string, dataStringSlice []string) bool {
+	for _, v := range dataStringSlice {
+		if v == key {
+			return true
+		}
+	}
+	return false
+}
+
 // 检测字符串是邮件、手机号、字符串
 // 返回: 0字符串1邮件2手机号
 func (u *Util) CheckStrType(str string) int {
