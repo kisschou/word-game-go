@@ -32,6 +32,12 @@ api_2002 = ["POST", "user_url", "/member/info"]
 api_2003 = ["POST", "user_url", "/member/register"]
 ## 更新用户信息
 api_2004 = ["POST", "user_url", "/member/updateInfo"]
+## 修改密码
+api_2005 = ["POST", "user_url", "/member/changePassword"]
+## 重设密码-忘记密码
+api_2006 = ["POST", "user_url", "/member/resetPassword"]
+## 初始化密码
+api_2007 = ["POST", "user_url", "/member/initPassword"]
 
 # 验证码服务地址
 
