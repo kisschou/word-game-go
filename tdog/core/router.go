@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/julienschmidt/httprouter"
@@ -251,9 +252,17 @@ func (c *Context) Next() {
 			HttpRequestLib.Params = params
 			res, data = HttpRequestLib.ServicePost()
 			if res {
+				var err error
 				resMap := make(map[string]interface{})
 				json.Unmarshal([]byte(data), &resMap)
-				c.BaseController.UserId = resMap["value"].(string)
+				userId, err := strconv.ParseInt(resMap["value"].(string), 10, 64)
+				if err != nil {
+					c.BaseController.Res.JSON(http.StatusInternalServerError, H{
+						"code": "ERROR_UNLOGIN",
+					})
+					return
+				}
+				c.BaseController.UserId = userId
 			}
 		}
 	}
