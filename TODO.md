@@ -8,7 +8,7 @@
 6. 加入Oauth2
 
 整理微服务:
-1. 用户服务 - user_service
+1. 用户服务 - feature_kisschou_user
 2. 鉴权服务 - feature_kisschou_auth
 3. 日志服务 - logger_service
 4. 短信服务 - sms_service
