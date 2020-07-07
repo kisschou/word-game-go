@@ -12,11 +12,11 @@
 2. 鉴权服务 - feature_kisschou_auth
 3. 日志服务 - logger_service
 4. 短信服务 - sms_service
-5. 验证码服务 - verifycode_service
+5. 验证码服务 - feature_kisschou_verification_code
+6. 网关服务 - feature_kisschou_feign
+7. 许可服务 (鉴权子服务) - permission_service
+8. 文件存储服务 - feature_kisschou_file
 6. 调试工具 - doctool
-7. 网关服务 - feature_kisschou_feign
-8. 许可服务 (鉴权子服务) - permission_service
-9. 文件存储服务 - feature_kisschou_file
 
 继续做:
 so many..
