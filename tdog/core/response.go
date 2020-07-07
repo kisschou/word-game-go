@@ -6,6 +6,9 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	"strconv"
+
+	"wordgame/tdog/lib"
 )
 
 type (
@@ -72,4 +75,14 @@ func (r *Response) Html(data interface{}) {
 	path, _ := os.Getwd()
 	t, _ := template.ParseFiles(path + "/app/views/" + r.context.Req.RequestURI + ".tpl")
 	t.Execute(r.context.Writer, data)
+}
+
+func (r *Response) Captcha(code string) {
+	d := make([]int, 4)
+	for i := 0; i < len(code); i++ {
+		iInt, _ := strconv.Atoi(code[i : i+1])
+		d[i] = iInt
+	}
+	r.context.Writer.Header().Set("Content-Type", "image/png")
+	lib.NewImage(d, 100, 40).WriteTo(r.context.Writer)
 }

@@ -21,3 +21,7 @@ ERROR_FILE_EXISTS = "该资源已经存在!"
 ERROR_FILE_ADD_FAIL = "资源入库失败!"
 ERROR_FILE_UPDATE_FAIL = "资源信息更新失败!"
 ERROR_FILE_MISSING = "未找到相关的资源文件!"
+
+# 验证码模块
+ERROR_CAPTCHA_TIMEOUT = "验证码已过期!"
+ERROR_CAPTCHA_FAIL = "验证码错误!"

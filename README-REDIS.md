@@ -15,4 +15,9 @@
 | user:openid:{:USER_OPEN_ID} | string | openId和用户id关联 |
 | user:info:{:USER_ID} | hash | 用户信息 |
 
+* 验证码数据
+| key  | type | desc |
+| ---- | ---- | ---- |
+| captcha:{:CAPTCHA_ACCESS} | string | 验证码授权码关联验证码, 存活期默认3分钟 |
+
 #### DB(1)
