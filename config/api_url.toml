@@ -10,7 +10,7 @@ auth_url = "http://127.0.0.1:8001"
 user_url = "http://127.0.0.1:8002"
 
 # 验证码服务地址
-verifycode_url = "http://127.0.0.1:8003"
+verification_code_url = "http://127.0.0.1:8003"
 
 # 短信服务地址
 sms_url = "http://127.0.0.1:8004"
