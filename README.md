@@ -71,12 +71,15 @@
     │   ├── service.go                  // 基础服务类，希望每个服务都引用他
     │   └── websocket.go                // WebSocket服务类
     └── lib                             // 附加方法
+        ├── captcha.go                  // 验证码图片生成
         ├── config.go                   // 配置文件获取类，viper作用于此
         ├── crypt.go                    // 加密方法都放在这里
+        ├── file.go                     // 上传文件接收存储等
         ├── http_request.go             // 对外模拟请求方法
         ├── logger.go                   // 日志类, logrus作用于此
         ├── mysql.go                    // MySQL操作类, xorm作用于此
         ├── redis.go                    // Redis操作类, go-redis作用于此
+        ├── snowflake.go                // 雪花算法
         └── util.go                     // 基础方法都在这里
 ```
 
