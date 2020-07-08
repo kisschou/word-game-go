@@ -46,3 +46,11 @@ api_2007 = ["POST", "user_url", "/member/initPassword"]
 # 日志服务
 
 # 文件存储服务
+## 获取公共文件
+api_7001 = ["POST", "file_url", "/file/pub"]
+## 获取私有文件
+api_7002 = ["POST", "file_url", "/file/pri"]
+## 文件上传
+api_7003 = ["POST", "file_url", "/file/upload"]
+## 修改文件信息
+api_7004 = ["POST", "file_url", "/file/modify"]
