@@ -1,15 +1,15 @@
 # 产品名 string
-app_name = "wordgame-go"
+app_name = "logger-service"
 
 # 服务端口 string
-app_port = "8000"
+app_port = "8005"
 
 # 加密混肴码 string
 hex_key = "1UgZfL<=Au3M9dQrcB7yzzd==8?xlZ:T3oP1id>jKWi4Bc9Kz<RbTSXqgPWJXxes945rzQ4ojlsqN25:95yb1-DsbAu1k6mUSs27CXDmQu-mx0lhH82-rA5=<NO0Z4:x"
 
 # 是否开启验签 bool
 # 如果关闭了验签同时也关闭了登录验证
-is_auth = true
+is_auth = false
 
 # 略过验签的路由 []string
 ignore_auth = ["/auth/getToken", "/demo/hello"]
