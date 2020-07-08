@@ -16,6 +16,7 @@ verification_code_url = "http://127.0.0.1:8003"
 sms_url = "http://127.0.0.1:8004"
 
 # 日志服务
+logger_url = "http://127.0.0.1:8005"
 
 # 文件存储服务
 file_url = "http://127.0.0.1:8006"
