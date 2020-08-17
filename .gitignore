@@ -1,0 +1,6 @@
+.DS_Store
+**/*.log
+
+# Editor directories and files
+.idea
+go.sum
