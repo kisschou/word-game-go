@@ -54,6 +54,10 @@ func NewEngine() *HttpEngine {
 	engine := &HttpEngine{}
 	engine.RouterGroup = &RouterGroup{nil, "", nil, engine, nil}
 	engine.router = httprouter.New()
+
+	// 静态资源
+	engine.router.ServeFiles("/public/static/*filepath", http.Dir("public/static/"))
+
 	return engine
 }
 
