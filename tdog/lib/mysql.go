@@ -135,7 +135,7 @@ func (myCnf *MySqlConf) Get(hostType string) *MySqlConf {
 	if conf.IsExists() {
 		mysqlPrefix = conf.String()
 	}
-	dsn := mysqlUser + ":" + mysqlPass + "@tcp(" + mysqlHost + ":" + mysqlPort + ")/" + mysqlDb + "?charset=" + mysqlCharset + "&parseTime=True&loc=Local&timeout=10ms"
+	dsn := mysqlUser + ":" + mysqlPass + "@tcp(" + mysqlHost + ":" + mysqlPort + ")/" + mysqlDb + "?charset=" + mysqlCharset + "&parseTime=True&loc=Local"
 	debug := conf.Get("database.debug").Bool()
 
 	return &MySqlConf{
