@@ -1,7 +1,6 @@
 package core
 
 import (
-	"encoding/json"
 	"net/http"
 	"path"
 	"strconv"
@@ -86,6 +85,10 @@ func (group *RouterGroup) createContext(w http.ResponseWriter, req *http.Request
 			req.ParseMultipartForm(32 << 20)
 		}
 	}
+
+	// 跨域
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	return &Context{
 		Writer:         w,
@@ -210,64 +213,33 @@ func (c *Context) Next() {
 			return
 		}
 
-		HttpRequestLib := new(lib.HttpRequest)
-		params := make(map[string]interface{})
-		params["api_key"] = "api_1003"
-		header := make(map[string]string)
-		header["Content-Type"] = "application/json"
-		header["Connection"] = "keep-alive"
-		params["header"] = header
-		body := make(map[string]interface{})
-		body["authorization"] = authorization
-		params["body"] = body
-		HttpRequestLib.Params = params
-		res, data := HttpRequestLib.ServicePost()
-		if !res {
-			c.BaseController.Res.String(http.StatusUnauthorized, data)
+		JwtCore := new(Jwt)
+		if !JwtCore.Check(authorization) {
+			c.BaseController.Res.JSON(http.StatusUnauthorized, H{
+				"code": "ERROR_UNAUTHOZED",
+			})
 			return
 		}
 
 		// 开始登录校验
 		if isLogin {
-			params := make(map[string]interface{})
-			params["api_key"] = "api_1004"
-			header := make(map[string]string)
-			header["Authorization"] = authorization
-			params["header"] = header
-			params["body"] = make(map[string]interface{})
-			HttpRequestLib.Params = params
-			res, data = HttpRequestLib.ServicePost()
-			if !res {
-				c.BaseController.Res.String(http.StatusUnauthorized, data)
-				return
-			}
-
-			// 通过登陆校验，获取用户openId
-			params = make(map[string]interface{})
-			params["api_key"] = "api_1005"
-			header = make(map[string]string)
-			header["Authorization"] = authorization
-			header["Content-Type"] = "application/json"
-			header["Connection"] = "keep-alive"
-			params["header"] = header
-			body = make(map[string]interface{})
-			body["key"] = "user_id"
-			params["body"] = body
-			HttpRequestLib.Params = params
-			res, data = HttpRequestLib.ServicePost()
-			if res {
-				var err error
-				resMap := make(map[string]interface{})
-				json.Unmarshal([]byte(data), &resMap)
-				userId, err := strconv.ParseInt(resMap["value"].(string), 10, 64)
+			var userId int64
+			var err error
+			if JwtCore.Get(authorization, "user_id") != nil {
+				userId, err = strconv.ParseInt(JwtCore.Get(authorization, "user_id").(string), 10, 64)
 				if err != nil {
 					c.BaseController.Res.JSON(http.StatusInternalServerError, H{
 						"code": "ERROR_UNLOGIN",
 					})
 					return
 				}
-				c.BaseController.UserId = userId
+			} else {
+				c.BaseController.Res.JSON(http.StatusInternalServerError, H{
+					"code": "ERROR_UNLOGIN",
+				})
+				return
 			}
+			c.BaseController.UserId = userId
 		}
 	}
 

@@ -26,6 +26,11 @@ func (r *Response) JSON(code int, obj interface{}) {
 	if code >= 0 {
 		r.context.Writer.WriteHeader(code)
 	}
+
+	// 跨域
+	r.context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	r.context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	r.context.Writer.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(r.context.Writer)
 	if code != http.StatusOK {
