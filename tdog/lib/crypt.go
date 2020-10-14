@@ -8,6 +8,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	ParentCrc32 "hash/crc32"
+	"strconv"
 )
 
 type Crypt struct {
@@ -34,6 +36,10 @@ func (h *Crypt) Sha512() string {
 	hash.Write([]byte(h.Str))
 	sum := hash.Sum(nil)
 	return hex.EncodeToString(sum)
+}
+
+func (h *Crypt) Crc32() string {
+	return strconv.Itoa(int(ParentCrc32.ChecksumIEEE([]byte(h.Str))))
 }
 
 func (h *Crypt) Base64Encode() string {
