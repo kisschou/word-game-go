@@ -47,8 +47,17 @@ func toFile(logger *Logger, context string) {
 	log := logrus.New()
 	// 设置输出
 	log.Out = src
-	// 设置日志级别
+	/**
+	 * 日志的级别（来自@dylanbeattie）
+	 * - Fatal：网站挂了，或者极度不正常
+	 * - Error：跟遇到的用户说对不起，可能有bug
+	 * - Warn：记录一下，某事又发生了
+	 * - Info：提示一切正常
+	 * - debug：没问题，就看看堆栈
+	 */
 	log.SetLevel(logrus.InfoLevel)
+	// 设置输出日志中添加文件名和方法信息
+	log.SetReportCaller(true)
 	// 设置日志格式
 	log.SetFormatter(&logrus.TextFormatter{})
 	// 写入日志
