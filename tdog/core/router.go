@@ -62,6 +62,14 @@ func NewEngine() *HttpEngine {
 
 // ServeHTTP makes the router implement the http.Handler interface.
 func (engine *HttpEngine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	// OPTIONS请求直接返回
+	if req.Method == "OPTIONS" {
+		// 跨域
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+		return
+	}
+
 	engine.router.ServeHTTP(w, req)
 }
 
@@ -88,7 +96,7 @@ func (group *RouterGroup) createContext(w http.ResponseWriter, req *http.Request
 
 	// 跨域
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
 
 	return &Context{
 		Writer:         w,
@@ -186,14 +194,16 @@ func (c *Context) Next() {
 	for _, v := range ignoreRouter {
 		if v == c.Req.RequestURI {
 			isAuth = false
+			break
 		}
 	}
-	// 跳过登录校验的路由列表
+	// 跳过登入校验的路由列表
 	ignoreLoginRouter := ConfigLib.Get("ignore_login").StringSlice()
 	isLogin := ConfigLib.Get("is_login").Bool()
 	for _, v := range ignoreLoginRouter {
 		if v == c.Req.RequestURI {
 			isLogin = false
+			break
 		}
 	}
 
