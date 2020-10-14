@@ -10,6 +10,7 @@ import (
 
 type (
 	Request struct {
+		Host    string
 		IpAddr  string
 		Header  map[string][]string
 		Params  map[string][]string
@@ -47,6 +48,7 @@ func (r *Request) New(c *Context) {
 	}
 	r.Get = ghostMap
 
+	// 请求参数
 	if _, ok := c.Req.Header["Content-Type"]; ok {
 		if strings.Contains(c.Req.Header["Content-Type"][0], "json") {
 			decoder := json.NewDecoder(c.Req.Body)
@@ -83,6 +85,18 @@ func (r *Request) New(c *Context) {
 			r.Post = ghostMap
 		}
 	}
+
+	// Get请求藏在地址中的参数
+	if c.Req.Method == "GET" {
+		methodParams := make(map[string][]string)
+		for _, v := range c.Params {
+			methodParams[v.Key] = []string{v.Value}
+		}
+		r.Get = methodParams
+	}
+
+	// 获取请求地址
+	r.Host = c.Req.Host
 
 	// 获取客户端ip地址
 	r = getIpAddr(r, c)
