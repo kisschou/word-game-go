@@ -56,7 +56,10 @@ func (file *File) GetFilePath() *File {
 	UtilLib := new(Util)
 	// 创建存储目录
 	filePath := ConfigLib.Get("file.file_save_path").String()
-	file.FilePath = "/data/upload/" + file.MIME + "/" + time.Now().Format("2006-01-02") + "/"
+	if filePath[len(filePath)-1:] != "/" {
+		filePath = filePath + "/"
+	}
+	file.FilePath = "data/upload/" + file.MIME + "/" + time.Now().Format("2006-01-02") + "/"
 	filePath += file.FilePath
 	UtilLib.DirExistsAndCreate(filePath)
 
