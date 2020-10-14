@@ -29,7 +29,7 @@ func (r *Response) JSON(code int, obj interface{}) {
 
 	// 跨域
 	r.context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	r.context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	r.context.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
 
 	r.context.Writer.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(r.context.Writer)
