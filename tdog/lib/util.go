@@ -76,6 +76,43 @@ func (u *Util) RandomNum(length int) string {
 	return string(result)
 }
 
+func codeToKey(hashCode string) []byte {
+	cryptMap := "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	bytes := []byte(cryptMap)
+	result := []byte{}
+	var i int
+	startIndex := 0
+	endIndex := startIndex + 2
+	for i = 0; i < (len(hashCode)/2 + len(hashCode)%2); i++ {
+		if len(hashCode[startIndex:]) < 2 {
+			si, _ := strconv.Atoi(hashCode[startIndex:])
+			result = append(result, bytes[si])
+			break
+		}
+		s := hashCode[startIndex:endIndex]
+		si, _ := strconv.Atoi(s)
+		if si > 61 {
+			si, _ = strconv.Atoi(hashCode[startIndex : startIndex+1])
+			result = append(result, bytes[si])
+			res := codeToKey(hashCode[startIndex+1:])
+			result = append(result, res...)
+			break
+		} else {
+			result = append(result, bytes[si])
+		}
+		startIndex += 2
+		endIndex = startIndex + 2
+	}
+	return result
+}
+
+func (u *Util) ShorturlKey(baseUrl string) string {
+	CryptLib := new(Crypt)
+	CryptLib.Str = baseUrl
+	hashCode := CryptLib.Crc32()
+	return string(codeToKey(hashCode))
+}
+
 // 判断map中是否存在某个key
 func (u *Util) InMap(key string, dataMap map[string]interface{}) bool {
 	if _, ok := dataMap[key]; ok {
