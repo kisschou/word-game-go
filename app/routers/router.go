@@ -2,27 +2,17 @@ package routers
 
 import (
 	"wordgame/app/controllers"
-	"wordgame/tdog/core"
+
+	"github.com/kisschou/tdog"
 )
 
-func InitRouter() *core.HttpEngine {
-	r := core.NewEngine()
-
-	var MemberController controllers.Member
-	r.GET("/ping", MemberController.Ping, &MemberController.Base)
-	r.POST("/ping", MemberController.Ping, &MemberController.Base)
-
-	memberRouter := r.Group("/member", &MemberController.Base)
-	{
-		memberRouter.POST("/login", MemberController.Login)
-		memberRouter.POST("/info", MemberController.GetInfo)
-		memberRouter.GET("/ping", MemberController.Ping)
-	}
+func InitRouter() *tdog.HttpEngine {
+	r := tdog.NewEngine()
 
 	var AuthController controllers.Auth
 	authRouter := r.Group("/auth", &AuthController.Base)
 	{
-		authRouter.POST("getToken", AuthController.GetToken)
+		authRouter.GET("getToken", AuthController.GetToken)
 	}
 
 	var FeignController controllers.Feign

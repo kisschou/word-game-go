@@ -4,22 +4,22 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"wordgame/tdog/core"
+	"github.com/kisschou/tdog"
 )
 
 type (
 	Feign struct {
-		Base core.Controller
+		Base tdog.Controller
 	}
 )
 
 func (feign *Feign) Http() {
 	data := feign.Base.Req.Put
 	dataJson, _ := json.Marshal(data)
-	FeignCore := core.NewFeign()
+	FeignCore := tdog.NewFeign()
 	code, res := FeignCore.Decoder(string(dataJson)).Target()
 	if code == 0 {
-		feign.Base.Res.JSON(http.StatusInternalServerError, core.H{
+		feign.Base.Res.JSON(http.StatusInternalServerError, tdog.H{
 			"code": res,
 		})
 		return
